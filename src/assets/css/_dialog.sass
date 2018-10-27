@@ -1,0 +1,18 @@
+.dialog
+  display: flex
+  width: auto
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  border: 1px solid $gray-300
+  padding: $dialog-padding
+  h2
+    +gradient-text(linear-gradient(25deg, black 0%, #434343 100%))
+    font-weight: 100
+    margin-bottom: 2rem
+    display: inline-block
+  input
+    margin-bottom: 2rem
+    text-align: center
+    transition: border .2s
+    border: 0 solid #333
