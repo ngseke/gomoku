@@ -12,10 +12,10 @@ export default new Router({
       name: 'Index',
       component: Index
     },
-    {
-      path: '/about',
-      name: 'about',
-      component: () => import('./views/About.vue')
-    }
+    // {
+    //   path: '/about',
+    //   name: 'about',
+    //   component: () => import('./views/About.vue')
+    // }
   ]
 })
