@@ -1,18 +1,19 @@
 <template lang="pug">
 .dialog
-  h2 Nickname
+  h2
+    template(v-if='!isFirst') Modify
+    template(v-else) Set
+    |  Nickname
   div.input-area
     input(:value='value' @input=`$emit('input', $event.target.value)` @focus='inputOnFocus()')
-    a.btn-dice(href='#' @click='setRandomName()') #[fa(icon='dice')]
+    a.btn-dice(href='#' @click.prevent='setRandomName()' title='特約命理師幫你起名') #[fa(icon='dice')]
   div
-    a.text-success.btn-confirm(href='#' @click='confirm()') V
-    //- | {{ isFirst }} {{ inputOnFocusCounter }}
+    a.text-success.btn-confirm(href='#' @click.prevent='confirm()') V
 </template>
 
 <script>
 export default {
   name: 'Nickname',
-  props: ['value', 'isFirst'],
   props: {
     value: String,
     isFirst: {
@@ -22,7 +23,7 @@ export default {
   },
   data () {
     return {
-      chineseCharacters: `宥翔語彤廷宇恩承恩品恩宸柏妍詠辰志豪沛恩綺妤芯語偉家冠`,
+      chineseCharacters: `宥翔語彤廷宇承恩品恩宸柏妍詠辰志豪沛恩綺妤芯語偉家冠`,
       inputOnFocusCounter: 0,
     }
   },
@@ -31,8 +32,14 @@ export default {
   },
   methods: {
     confirm () {
-      if (this.value.length !== 0)
+      // TODO: 加入防彈跳
+      if (this.value.length !== 0) {
         this.$emit('confirm')
+      }
+      else {
+        this.setRandomName()
+        this.$emit('confirm')
+      }
     },
     setRandomName () {
       const char = this.chineseCharacters.split(``).sort((a, b) => Math.random() > 0.5 ? -1 : 1)[0]
@@ -54,8 +61,10 @@ export default {
 .input-area
   position: relative
   width: 100%
+
 a.btn-dice
+  display: inline-block
   position: absolute
   right: .5rem
-
+  top: 0
 </style>
