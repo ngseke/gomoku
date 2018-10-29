@@ -1,14 +1,15 @@
 <template lang="pug">
 .dialog
-  h2
+  h2.show-up
     template(v-if='!isFirst') Modify
     template(v-else) Set
     |  Nickname
-  div.input-area
+  div.input-area.show-up(:style='{ animationDelay: `.2s` }')
     input(:value='value' @input=`$emit('input', $event.target.value)` @focus='inputOnFocus()')
     a.btn-dice(href='#' @click.prevent='setRandomName()' title='特約命理師幫你起名') #[fa(icon='dice')]
-  div
+  div.show-up(:style='{ animationDelay: `.4s` }')
     a.text-success.btn-confirm(href='#' @click.prevent='confirm()') V
+    a.text-danger.btn-cancel(href='#' @click.prevent='$emit(`cancel`)' v-if='!isFirst') X
 </template>
 
 <script>
@@ -40,6 +41,9 @@ export default {
         this.setRandomName()
         this.$emit('confirm')
       }
+    },
+    cancel () {
+
     },
     setRandomName () {
       const char = this.chineseCharacters.split(``).sort((a, b) => Math.random() > 0.5 ? -1 : 1)[0]

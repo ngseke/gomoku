@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 import Index from './views/Index.vue'
 import Register from './views/Register.vue'
+import ModifyProfile from './views/ModifyProfile.vue'
 
 Vue.use(Router)
 
@@ -14,9 +15,19 @@ export default new Router({
       component: Index
     },
     {
-      path: '/reg',
+      path: '/新來',
       name: 'Register',
       component: Register
+    },
+    {
+      path: '/modify-profile',
+      name: 'ModifyProfile',
+      component: () => import('./views/ModifyProfile.vue')
+    },
+    {
+      path: '/新局',
+      name: 'NewRoom',
+      component: () => import('./views/NewRoom.vue')
     },
     // {
     //   path: '/about',

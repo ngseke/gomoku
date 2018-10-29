@@ -23,13 +23,13 @@ const getPlayer = (id) => {
   })
 }
 
-const setNewPlayer = (id, name) => {
+const setPlayer = (id, name, isNew = true) => {
   const newPlayer = {
     name,
-    createDate: +new Date()
   }
+  if (isNew) newPlayer.createDate = +new Date()
   return new Promise((resolve, reject) => {
-    dbPlayers.child(id).set(newPlayer)
+    dbPlayers.child(id).update(newPlayer)
       .then(result => resolve())
       .catch(e => reject(e))
   })
@@ -38,5 +38,5 @@ const setNewPlayer = (id, name) => {
 export default {
   dbRef,
   getPlayer,
-  setNewPlayer
+  setPlayer,
 }

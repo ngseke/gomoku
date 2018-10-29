@@ -3,10 +3,12 @@ main
   Logo
   .container
     .row.justify-content-center.align-items-center.mt-3
-      .col-12.col-md-6.col-lg-4(v-if='fingerprint')
-        Nickname(v-model.trim='name' @confirm='confirm' :isFirst='true')
+      .col-12.col-md-6.col-lg-4(v-if='fingerprint && profile')
+        Nickname(v-model.trim='name' @confirm='confirm' @cancel='goToIndex()' :isFirst='false')
       .col-12.loading(v-else)
         fa(icon='circle-notch' spin)
+      //- .col-12
+        .fingerprint {{ fingerprint }}
 </template>
 
 <script>
@@ -18,7 +20,7 @@ import fingerprint from '@/assets/js/fingerprint'
 import db from '@/assets/js/db'
 
 export default {
-  name: 'Register',
+  name: 'ModifyProfile',
   data () {
     return {
     }
@@ -30,14 +32,14 @@ export default {
         return db.getPlayer(fingerprint)
       })
       .then(profile => {
+        if (!profile) this.goToIndex()
         this.profile = profile
-        console.log(profile && this.isFirst)
-        if (profile) this.goToIndex()
+        this.name = profile.name
       })
   },
   methods: {
     confirm () {
-      db.setPlayer(this.fingerprint, this.name)
+      db.setPlayer(this.fingerprint, this.name, false)
         .then(() => this.goToIndex())
     },
     goToIndex () {

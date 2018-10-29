@@ -4,6 +4,7 @@
 @import "functions"
 @import "button"
 @import "dialog"
+@import "animation"
 
 input
   border: 0
@@ -11,3 +12,9 @@ input
   background-image: $input-background-image
   letter-spacing: .1rem
   +px(.5rem)
+
+h2
+  +gradient-text(linear-gradient(25deg, black 0%, #434343 100%))
+  font-weight: 100
+  margin-bottom: 2rem
+  display: inline-block

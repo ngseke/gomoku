@@ -1,0 +1,29 @@
+.block-item-enter-active
+  transition: all .3s ease
+
+.block-item-leave-active
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1)
+
+.block-item-enter, .block-item-leave-to
+  transform: scale(.5)
+  opacity: 0
+
+.chat-item-enter-active
+  transition: all .3s ease
+  transform-origin: left
+
+.chat-item-enter
+  transform-origin: left
+  transform: translateX(-1rem) scale(0)
+  opacity: 0
+
+@keyframes down-to-up
+  from
+    opacity: 0
+    transform: translateY(5rem)
+  to
+    transform: 0
+
+.show-up
+  animation: down-to-up .4s ease
+  animation-fill-mode: backwards
