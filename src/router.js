@@ -15,7 +15,7 @@ export default new Router({
       component: Index
     },
     {
-      path: '/新來',
+      path: '/register',
       name: 'Register',
       component: Register
     },
@@ -25,9 +25,9 @@ export default new Router({
       component: () => import('./views/ModifyProfile.vue')
     },
     {
-      path: '/新局',
-      name: 'NewRoom',
-      component: () => import('./views/NewRoom.vue')
+      path: '/room',
+      name: 'Room',
+      component: () => import('./views/Room.vue')
     },
     // {
     //   path: '/about',

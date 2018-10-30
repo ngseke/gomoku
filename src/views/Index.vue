@@ -1,26 +1,26 @@
 <template lang="pug">
 main
+  Logo
   #lobby.container
     .row
       .col-12.col-md-5.col-lg-5
         nav
-          a.block.new(href='#')
+          router-link.block.new(href='#' :to='{ name: `Room` }')
             h3 New
           .block.join
             h3 Join
             .input-area
-              input(v-model='roomId')
-              a.submit(href='#') #[fa(icon='angle-right')]
+              input(type='text' v-model='roomId' maxlength='4')
+              a.submit(href='#') #[fa(icon='check')]
           router-link.block.profile(:to='{ name: `ModifyProfile` }')
             div(v-if='profile')
-              h3 #[fa(icon='user')] {{ profile.name }}
+              h3(:title='fingerprint') #[fa(icon='user')] {{ profile.name }}
             div(v-else) #[fa(icon='ellipsis-h')]
-            //- .fingerprint(v-if='fingerprint') {{ fingerprint }}
-      .col
-        h2 Latest Created
+      .col.mt-5.mt-md-0
+        h2 Recently Created
         #room-list
           ul
-            li(v-for='i in 5')
+            li
               h4 Room Name #[small ab12]
               .description
                 span 幾秒前
@@ -28,7 +28,9 @@ main
 </template>
 
 <script>
+import Logo from '@/components/Logo.vue'
 import fingerprint from '@/assets/js/fingerprint'
+import room from '@/assets/js/room'
 import db from '@/assets/js/db'
 
 import moment from 'moment'
@@ -38,7 +40,7 @@ export default {
     return {
       fingerprint: null,
       profile: null,
-      roomId: `abc`
+      roomId: `ab10`
     }
   },
   mounted () {
@@ -51,53 +53,52 @@ export default {
         if (!profile) this.$router.push({ name: 'Register' })
         else this.profile = profile
       })
+    // db.createRoom()
   },
   methods: {
 
   },
   components: {
+    Logo
   }
 }
 </script>
 
 <style scoped lang="sass">
 main
-  +flex-center
-  height: 100vh
+  // +flex-center
+  // flex-direction: column
+  // height: 100vh
 
 #lobby
   +block-border
   .row
     +my(1rem)
+  // max-width: 1000px
 nav
   >.block
     +flex-center
+    +gradient-bg($gray-200, 10%)
     margin-bottom: 1rem
     flex-direction: column
-    background-color: $gray-100
-    min-height: 10rem
+    min-height: 8rem
     color: white
     h3
       font-size: 1.5rem
       font-weight: 700
       font-style: italic
       margin-bottom: 0
+      letter-spacing: .1rem
     &.new
       background-image: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%)
     &.join
       background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%)
-      &:hover
-        .input-area
-          opacity: 1
-          max-height: 10rem
       .input-area
         width: 100%
         margin-top: .5rem
         +flex-center
         +px(2rem)
         transition: all .3s
-        opacity: 0
-        max-height: 0
         input
           display: inline-block
           margin-right: .5rem
@@ -106,9 +107,11 @@ nav
           display: inline-block
           color: white
     &.profile
-      font-size: 1.2rem
       color: $black
       margin-bottom: 0
+      h3
+        font-style: normal
+        font-size: 1rem
       .fingerprint
         font-size: .8rem
         color: $gray-500
@@ -116,11 +119,14 @@ nav
     &:hover
 
 h2
+  display: block
   text-transform: uppercase
   margin-bottom: 1rem
+  text-align: center
+
 
 #room-list
-  max-height: 26rem
+  max-height: 22rem
   overflow-x: hidden
   overflow-y: scroll
   ul

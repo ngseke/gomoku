@@ -3,7 +3,7 @@ main
   Logo
   .container
     .row.justify-content-center.align-items-center.mt-3
-      .col-12.col-md-6.col-lg-4(v-if='fingerprint')
+      .col-12.col-md-6.col-lg-5.col-xl-4(v-if='fingerprint')
         Nickname(v-model.trim='name' @confirm='confirm' :isFirst='true')
       .col-12.loading(v-else)
         fa(icon='circle-notch' spin)
@@ -31,7 +31,6 @@ export default {
       })
       .then(profile => {
         this.profile = profile
-        console.log(profile && this.isFirst)
         if (profile) this.goToIndex()
       })
   },

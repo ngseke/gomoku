@@ -3,7 +3,7 @@ main
   Logo
   .container
     .row.justify-content-center.align-items-center.mt-3
-      .col-12.col-md-6.col-lg-4(v-if='fingerprint && profile')
+      .col-12.col-md-6.col-lg-5.col-xl-4(v-if='fingerprint && profile')
         Nickname(v-model.trim='name' @confirm='confirm' @cancel='goToIndex()' :isFirst='false')
       .col-12.loading(v-else)
         fa(icon='circle-notch' spin)

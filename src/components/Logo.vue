@@ -1,13 +1,11 @@
 <template lang="pug">
 #logo
-  h1 XIAQI
+  h1 Xiaqi
 </template>
 
 <script>
 export default {
   name: 'Logo',
-  props: {
-  }
 }
 </script>
 
@@ -15,8 +13,11 @@ export default {
 #logo
   +flex-center
   +my(1rem)
-    
+
 h1
   display: inline-block
   color: $yellow
+  color: $black
+  font-weight: 900
+  text-transform: uppercase
 </style>
