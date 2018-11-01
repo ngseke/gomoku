@@ -61,9 +61,9 @@ const createRoom = (creatorId = null) => {
     },
     chat: {
       0: {
-        content: `The room has created on ${moment().format('YYYY/MM/DD HH:mm:ss')}`,
+        content: `The room has been created on ${moment().format('YYYY/MM/DD HH:mm:ss')}`,
         date: +new Date(),
-      }
+      },
     },
     game: {
       board: [1],
@@ -87,7 +87,10 @@ const createRoom = (creatorId = null) => {
       }
       if(createAttemptCounter >= 0) {
         roomRef.child(id).set(newRoom)
-          .then(() => resolve(id))
+          .then(() => {
+            sendChat(id, `The room ID is ${id}`)
+            resolve(id)
+          })
           .catch(e => reject(e))
       } else {
         reject(`out of roomId`)
@@ -107,12 +110,20 @@ const getIsRoomExist = (id) => {
 
 const onRoom = (id, child, cb) => {
   if (child === `chat`)
-    roomRef.child(`${id}/${child}`).limitToLast(10).on('value', (snap) => {
+    roomRef.child(`${id}/${child}`).orderByChild('date').limitToLast(10).on('value', (snap) => {
       cb(snap.val())
       console.log(`[event]${id}/${child}`)
     })
   else
-    roomRef.child(`${id}/${child}`).on('value', (snap) => cb(snap.val()))
+    roomRef.child(`${id}/${child}`).on('value', (snap) => {
+      cb(snap.val())
+      console.log(`[event]${id}/${child}`)
+    })
+}
+
+const setRoomInfo = async (id, info = {}) => {
+  await roomRef.child(`${id}/info`).update(info)
+  return true
 }
 
 const offRoom = (id, child) => {

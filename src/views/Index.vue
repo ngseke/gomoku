@@ -73,6 +73,10 @@ export default {
   computed: {
 
   },
+  beforeDestroy () {
+    console.log(`beforeDestroy`)
+    this.leaveRoom()
+  },
   components: {
     Logo
   }

@@ -1,14 +1,14 @@
 <template lang="pug">
 #logo
   h1
-    a(href='#' @click='back()')
+    a(href='#' @click='back()' v-if='name')
       fa(icon='angle-left')
     |  Xiaqi
     |
     //- img(src='@/assets/logo.png')
     //- a(href='https://console.firebase.google.com/u/0/project/xiaqi-game/database' target='_blank')
     //-   img(src='https://cdn-images-1.medium.com/max/1600/1*R4c8lHBHuH5qyqOtZb3h-w.png')
-  h2(v-if='name') {{ name }}
+  h2(v-if='name' @click='clickRoomName()') {{ name }}
 </template>
 
 <script>
@@ -23,6 +23,9 @@ export default {
   methods: {
     back () {
       this.$router.push({ name: `Index` })
+    },
+    clickRoomName () {
+      this.$emit('clickRoomName')
     }
   }
 }
@@ -54,6 +57,7 @@ h2
   font-weight: 500
   font-size: 1.5rem
   color: white
+  cursor: pointer
   transform: translateY(-.2rem) skewX(20deg)
   background-clip: border-box
   background-image: radial-gradient(circle 248px at center, #16d9e3 0%, #30c7ec 47%, #46aef7 100%)

@@ -6,20 +6,23 @@
   transition: border .3s
   border: 1px solid rgba(#fad0c4, 0)
   margin: 1rem 0
+  width: 100%
 
   &:hover
     border: 1px solid rgba(#fad0c4, .8)
   ul
-    height: 12rem
+    display: flex
+    flex-direction: row
+    height: 15rem
+    width: 100%
     overflow-y: scroll
-    overflow-x: auto
-    padding: 0
-    list-style: none
+    overflow-x: visible
     li
       display: flex
-
       margin-bottom: .4rem
+      width: 100%
       color: $black
+      word-break: break-all
       b
         margin-right: .5rem
       .time

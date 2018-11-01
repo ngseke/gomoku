@@ -1,13 +1,13 @@
 <template lang="pug">
 main
-  Logo(:name='roomName')
+  Logo(:name='roomName' @clickRoomName='changeRoomName()')
   .container(v-if='!isLoading')
     .row
-      .col-12.col-md-4
+      .col-12.col-md-5.col-lg-4
         #player-list
           ul
             li(v-for='p in players' :title='`加入遊戲時間: ${convertDate(p.date)}`') #[fa(icon='user')]  {{ p.info.name }}
-        Chat(:roomId='roomId' :fingerprint='fingerprint')
+        Chat(:roomId='roomId' :fingerprint='fingerprint' ref='chat')
       .col-12.col-md
   .loader(v-if='isLoading')
     span #[fa(icon='circle-notch' spin)]
@@ -19,7 +19,10 @@ import Logo from '@/components/Logo.vue'
 import Chat from '@/components/Chat.vue'
 import fingerprint from '@/assets/js/fingerprint'
 import db from '@/assets/js/db'
+
+import firebase from 'firebase/app'
 import moment from 'moment'
+import randomstring from 'randomstring'
 
 export default {
   name: 'Room',
@@ -34,11 +37,13 @@ export default {
       fingerprint: null,
       roomId: null,
       profile: null,
+      session: null,
       status: [``],
     }
   },
   created () {
     this.roomId = this.$route.params.id   // 根據網址參數設定 roomId
+    this.session = randomstring.generate({ length: 6 })
   },
   mounted () {
     this.status.push(`初始化...`)
@@ -47,7 +52,6 @@ export default {
   methods: {
     // 初始化
     async init () {
-
       this.isLoading = true   // 設定正在載入中
       await this.setProfile() // 取得玩家本人資料
       await this.checkRoom()  // 檢查房間是否存在
@@ -65,16 +69,26 @@ export default {
         if (snap.val() !== true) this.disconnect()
       })
 
-      // 當 `遠端` 偵測本機離線時，移除 players 中的玩家本人
+      // 當 `遠端` 偵測本機離線時
+      // 1. 移除 players 中的玩家本人
       db.roomRef.child(`${this.roomId}/players/${this.fingerprint}`).onDisconnect().remove()
+      // 2. 聊天室插入離開訊息
+      db.roomRef.child(`${this.roomId}/chat/${this.session}`).onDisconnect().set({
+        date:  firebase.database.ServerValue.TIMESTAMP,
+        content: `${this.profile.name} has accidentally left.`
+      })
+
       this.isLoading = false
+
+      this.$nextTick(() => {
+        this.$nextTick(() => this.sendSystemInfo(`${this.profile.name} has joined.`))
+      })
     },
     convertDate (x, isFromNow = false) {
       if (isFromNow) return moment(x).fromNow()
       return moment(x).format(`YYYY/MM/DD HH:mm:ss`)
     },
     async disconnect () {
-      // await this.leaveRoom()
       this.goToIndex()
     },
     async setProfile () {
@@ -101,12 +115,20 @@ export default {
     },
     async leaveRoom () {
       this.status.push(`離開房間中`)
+      this.sendSystemInfo(`${this.profile.name} has left.`)
       this.linstenList.forEach(child => db.offRoom(this.roomId, child))
       await db.leaveRoom(this.roomId, this.fingerprint)
-      db.roomRef.child(`${this.roomId}/players/${this.fingerprint}`).onDisconnect().cancel
+      db.roomRef.child(`${this.roomId}/players/${this.fingerprint}`).onDisconnect().cancel()  // 解除綁定
+      db.roomRef.child(`${this.roomId}/chat/${this.session}`).onDisconnect().cancel()
     },
     goToIndex () {
       this.$router.push({ name: 'Index' })
+    },
+    sendSystemInfo (message) {
+      this.$refs.chat.sendChat(this.roomId, message, null)
+    },
+    changeRoomName () {
+      console.log(`chage`)
     }
   },
   computed: {
@@ -117,10 +139,13 @@ export default {
   watch: {
   },
   beforeDestroy () {
+    console.log(`beforeDestroy`)
     this.leaveRoom()
   },
   beforeRouteLeave (to, from, next) {
-    this.leaveRoom().then(() => next())
+    next()
+    // console.log(`beforeRouteLeave`)
+    // this.leaveRoom().then(() => next())
   },
   components: {
     Logo,
@@ -140,7 +165,6 @@ export default {
     display: flex
     font-size: .8rem
     margin-bottom: 0
-    padding: 0
     li
       color: white
       background-image: $black-gradient
