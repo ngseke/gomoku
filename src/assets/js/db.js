@@ -4,6 +4,7 @@ import 'firebase/database'
 import 'firebase/storage'
 
 const randomstring = require('randomstring')
+const moment = require('moment')
 
 const config = {
   apiKey: 'AIzaSyD6tU4SaDPQ8Eat9H3EXF24Y4WMguWFs5w',
@@ -59,7 +60,10 @@ const createRoom = (creatorId = null) => {
 
     },
     chat: {
-
+      0: {
+        content: `The room has created on ${moment().format('YYYY/MM/DD HH:mm:ss')}`,
+        date: +new Date(),
+      }
     },
     game: {
       board: [1],
@@ -96,15 +100,19 @@ const createRoom = (creatorId = null) => {
 const getIsRoomExist = (id) => {
   return new Promise((resolve, reject) => {
     roomRef.child(id).once('value')
-      .then(snap => resolve(!!snap.val()))
+      .then(snap => resolve(snap.exists()))
       .catch(e => reject(e))
   })
 }
 
 const onRoom = (id, child, cb) => {
-  roomRef.child(id).child(child).on('value', (snap) => {
-    cb(snap.val())
-  })
+  if (child === `chat`)
+    roomRef.child(`${id}/${child}`).limitToLast(10).on('value', (snap) => {
+      cb(snap.val())
+      console.log(`[event]${id}/${child}`)
+    })
+  else
+    roomRef.child(`${id}/${child}`).on('value', (snap) => cb(snap.val()))
 }
 
 const offRoom = (id, child) => {
@@ -129,16 +137,31 @@ const leaveRoom = (id, fingerprint) => {
   })
 }
 
+const sendChat = async (id, content, fingerprint = null) => {
+  const player = (fingerprint) ? await getPlayer(fingerprint) : null
+  const message = {
+    date: +new Date(),
+    player,
+    content,
+  }
+  await roomRef.child(`${id}/chat`).push(message)
+}
+
 export default {
   dbRef,
   playerRef,
   roomRef,
+  connectedRef,
+  //
   getPlayer,
   setPlayer,
+  //
   createRoom,
   getIsRoomExist,
   onRoom,
   offRoom,
   joinRoom,
   leaveRoom,
+  //
+  sendChat
 }

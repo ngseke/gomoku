@@ -1,0 +1,60 @@
+#chat
+  text-align: left
+  font-size: .8rem
+  padding: 1rem
+  letter-spacing: .05rem
+  transition: border .3s
+  border: 1px solid rgba(#fad0c4, 0)
+  margin: 1rem 0
+
+  &:hover
+    border: 1px solid rgba(#fad0c4, .8)
+  ul
+    height: 12rem
+    overflow-y: scroll
+    overflow-x: auto
+    padding: 0
+    list-style: none
+    li
+      display: flex
+
+      margin-bottom: .4rem
+      color: $black
+      b
+        margin-right: .5rem
+      .time
+        margin-left: .5rem
+        font-size: .8rem
+        color: $gray-500
+        display: none
+      &:hover
+        .time
+          display: inline-block
+    .info
+      font-style: italic
+      font-weight: bold
+      color: transparent
+      background-clip: text
+      background-image: linear-gradient(to right, #fa709a 0%, #fee140 100%)
+    .content
+      display: inline-block
+
+  .input-area
+    display: flex
+    align-items: center
+    .icon
+      margin-right: .5rem
+      i
+        color: #666
+        color: transparent
+        background-clip: text
+        background-image: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%)
+    input
+      border: 0
+      width: 100%
+      background-image: linear-gradient(165deg, #fdfbfb 50%, #ebedee 100%)
+      letter-spacing: .05rem
+      padding: 0 .5rem
+      &::placeholder
+        font-style: italic
+        color: rgba(black, .3)

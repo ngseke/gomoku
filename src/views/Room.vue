@@ -1,18 +1,22 @@
 <template lang="pug">
 main
   Logo(:name='roomName')
-  .container(v-if='!isWaiting')
+  .container(v-if='!isLoading')
     .row
-      .col-12.col-lg-3
-        ul#player-list
-          li(v-for='p in players') #[fa(icon='user')]  {{ p.info.name }}
-      .col-12.col-lg
-  .loader(v-if='isWaiting')
-    span #[fa(icon='circle-notch' spin)] {{ status[(status.length - 1)] }}
+      .col-12.col-md-4
+        #player-list
+          ul
+            li(v-for='p in players' :title='`加入遊戲時間: ${convertDate(p.date)}`') #[fa(icon='user')]  {{ p.info.name }}
+        Chat(:roomId='roomId' :fingerprint='fingerprint')
+      .col-12.col-md
+  .loader(v-if='isLoading')
+    span #[fa(icon='circle-notch' spin)]
+    span {{ status[(status.length - 1)] }}
 </template>
 
 <script>
 import Logo from '@/components/Logo.vue'
+import Chat from '@/components/Chat.vue'
 import fingerprint from '@/assets/js/fingerprint'
 import db from '@/assets/js/db'
 import moment from 'moment'
@@ -21,39 +25,57 @@ export default {
   name: 'Room',
   data () {
     return {
+      linstenList: [`info`, `players`, `game`],
       info: null,
       players: null,
-      isWaiting: null,
+      game: null,
+      //
+      isLoading: null,
       fingerprint: null,
       roomId: null,
       profile: null,
       status: [``],
     }
   },
-  mounted() {
+  created () {
+    this.roomId = this.$route.params.id   // 根據網址參數設定 roomId
+  },
+  mounted () {
     this.status.push(`初始化...`)
     this.init()
   },
   methods: {
+    // 初始化
     async init () {
-      this.roomId = this.$route.params.id
-      this.isWaiting = true
-      await this.setProfile()
-      await this.checkRoom()
-      await this.joinRoom()
 
-      this.status.push(`監聽房間info`)
-      db.onRoom(this.roomId, `info`, (data) => this.info = data)
-      db.onRoom(this.roomId, `players`, (data) => this.players = data)
+      this.isLoading = true   // 設定正在載入中
+      await this.setProfile() // 取得玩家本人資料
+      await this.checkRoom()  // 檢查房間是否存在
+      await this.joinRoom()   // 加入房間
 
+      this.status.push(`監聽房間`)
+
+      // 監聽房間內 linstenList 列表中所有子節點
+      this.linstenList.forEach(child => {
+        db.onRoom(this.roomId, child, (data) => this[child] = data)
+      })
+
+      // 當 `本機` 離線時呼叫 disconnect()
+      db.connectedRef.on('value', (snap) => {
+        if (snap.val() !== true) this.disconnect()
+      })
+
+      // 當 `遠端` 偵測本機離線時，移除 players 中的玩家本人
       db.roomRef.child(`${this.roomId}/players/${this.fingerprint}`).onDisconnect().remove()
-      this.isWaiting = false
+      this.isLoading = false
     },
-    convertDateText (x) {
+    convertDate (x, isFromNow = false) {
+      if (isFromNow) return moment(x).fromNow()
       return moment(x).format(`YYYY/MM/DD HH:mm:ss`)
     },
-    disconnect () {
-
+    async disconnect () {
+      // await this.leaveRoom()
+      this.goToIndex()
     },
     async setProfile () {
       this.status.push(`取得裝置指紋中`)
@@ -69,51 +91,60 @@ export default {
     async checkRoom () {
       this.status.push(`檢查房間ID`)
       if (!(await db.getIsRoomExist(this.roomId))) {
-        this.$router.push({ name: `Index` })
+        this.goToIndex()
         throw `The room doesn't exist.`
       }
     },
     async joinRoom () {
-      this.status.push(`登記加入房間中`)
+      this.status.push(`登記中`)
       await db.joinRoom(this.roomId, this.fingerprint)
     },
     async leaveRoom () {
       this.status.push(`離開房間中`)
+      this.linstenList.forEach(child => db.offRoom(this.roomId, child))
       await db.leaveRoom(this.roomId, this.fingerprint)
+      db.roomRef.child(`${this.roomId}/players/${this.fingerprint}`).onDisconnect().cancel
     },
+    goToIndex () {
+      this.$router.push({ name: 'Index' })
+    }
   },
   computed: {
     roomName () {
       return (this.info) ? this.info.name : null
     },
   },
-  beforeDestroy() {
-    db.roomRef.child(`${this.roomId}/players/${this.fingerprint}`).onDisconnect().cancel
-    db.offRoom(this.roomId, `info`)
-    db.offRoom(this.roomId, `players`)
+  watch: {
+  },
+  beforeDestroy () {
     this.leaveRoom()
   },
   beforeRouteLeave (to, from, next) {
-
-    next()
+    this.leaveRoom().then(() => next())
   },
   components: {
-    Logo
+    Logo,
+    Chat
   },
 }
 </script>
 
 <style scoped lang="sass">
+
 .row
   justify-content: center
   align-items: center
 
 #player-list
-  +flex-center
-  align-items: flex-start
-  list-style: none
-  padding: 0
-  font-size: .8rem
-  li
-    margin-bottom: .2rem
+  ul
+    display: flex
+    font-size: .8rem
+    margin-bottom: 0
+    padding: 0
+    li
+      color: white
+      background-image: $black-gradient
+      margin-right: .5rem
+      padding: .1rem .5rem
+      border-radius: 100px
 </style>

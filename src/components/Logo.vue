@@ -1,11 +1,13 @@
 <template lang="pug">
 #logo
   h1
-    | Xiaqi
+    a(href='#' @click='back()')
+      fa(icon='angle-left')
+    |  Xiaqi
     |
-    img(src='@/assets/logo.png')
-    a(href='https://console.firebase.google.com/u/0/project/xiaqi-game/database' target='_blank')
-      img(src='https://cdn-images-1.medium.com/max/1600/1*R4c8lHBHuH5qyqOtZb3h-w.png')
+    //- img(src='@/assets/logo.png')
+    //- a(href='https://console.firebase.google.com/u/0/project/xiaqi-game/database' target='_blank')
+    //-   img(src='https://cdn-images-1.medium.com/max/1600/1*R4c8lHBHuH5qyqOtZb3h-w.png')
   h2(v-if='name') {{ name }}
 </template>
 
@@ -16,6 +18,11 @@ export default {
     name: {
       type: String,
       default: null
+    }
+  },
+  methods: {
+    back () {
+      this.$router.push({ name: `Index` })
     }
   }
 }
@@ -28,6 +35,7 @@ export default {
   margin-top: 2rem
 
 h1
+  position: relative
   display: inline-block
   color: $yellow
   color: $black
@@ -35,6 +43,8 @@ h1
   font-weight: 900
   text-transform: uppercase
   font-size: 3rem
+  a
+    opacity: .5
   img
     width: auto
     height: 1.2rem

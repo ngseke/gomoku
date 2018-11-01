@@ -9,12 +9,13 @@
   opacity: 0
 
 .chat-item-enter-active
-  transition: all .3s ease
+  transition: all .3s
   transform-origin: left
+  opacity: 1
 
-.chat-item-enter
+.chat-item-enter, .chat-item-leave-to
   transform-origin: left
-  transform: translateX(-1rem) scale(0)
+  transform: translateX(-2rem) scale(.5)
   opacity: 0
 
 @keyframes down-to-up
