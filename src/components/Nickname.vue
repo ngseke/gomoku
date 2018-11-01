@@ -1,15 +1,16 @@
 <template lang="pug">
 .dialog
-  h2.show-up
+  h2.show-up(v-if='isRoomName') Room Name
+  h2.show-up(v-else)
     template(v-if='!isFirst') Modify
     template(v-else) Set
     |  Nickname
   div.input-area.show-up(:style='{ animationDelay: `.15s` }')
-    input(type='text' :value='value' @input=`$emit('input', $event.target.value)` @focus='inputOnFocus()' @keyup.stop.prevent.enter='confirm()')
-    a.btn-dice(href='#' @click.prevent='setRandomName()' title='特約命理師幫你起名') #[fa(icon='dice')]
+    input(type='text' :value='value' @input=`$emit('input', $event.target.value)` @focus='inputOnFocus()' @keyup.stop.prevent.enter='confirm()' maxlength='30')
+    a.btn-dice(href='#' @click.prevent='setRandomName()' title='特約命理師幫你起名' v-if='!isRoomName') #[fa(icon='dice')]
   div.show-up(:style='{ animationDelay: `.3s` }')
     a.text-success.btn-confirm(href='#' @click.prevent='confirm()') V
-    a.text-danger.btn-cancel(href='#' @click.prevent='$emit(`cancel`)' v-if='!isFirst') X
+    a.text-danger.btn-cancel(href='#' @click.prevent='$emit(`cancel`)' v-if='!isFirst || isRoomName') X
 </template>
 
 <script>
@@ -18,6 +19,10 @@ export default {
   props: {
     value: String,
     isFirst: {
+      type: Boolean,
+      default: false
+    },
+    isRoomName: {
       type: Boolean,
       default: false
     },
@@ -37,13 +42,6 @@ export default {
       if (this.value.length !== 0) {
         this.$emit('confirm')
       }
-      else {
-        this.setRandomName()
-        this.$emit('confirm')
-      }
-    },
-    cancel () {
-
     },
     setRandomName () {
       const char = this.chineseCharacters.split(``).sort((a, b) => Math.random() > 0.5 ? -1 : 1)[0]

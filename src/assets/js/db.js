@@ -109,9 +109,17 @@ const getIsRoomExist = (id) => {
   })
 }
 
+const getIsLoggedIn = (id, fingerprint) => {
+  return new Promise((resolve, reject) => {
+    roomRef.child(`${id}/players/${fingerprint}`).once('value')
+      .then(snap => resolve(snap.exists()))
+      .catch(e => reject(e))
+  })
+}
+
 const onRoom = (id, child, cb) => {
   if (child === `chat`)
-    roomRef.child(`${id}/${child}`).orderByChild('date').limitToLast(10).on('value', (snap) => {
+    roomRef.child(`${id}/${child}`).orderByChild('date').limitToLast(100).on('value', (snap) => {
       cb(snap.val())
       console.log(`[event]${id}/${child}`)
     })
@@ -167,6 +175,7 @@ export default {
   //
   getPlayer,
   setPlayer,
+  getIsLoggedIn,
   //
   createRoom,
   getIsRoomExist,
@@ -174,6 +183,7 @@ export default {
   offRoom,
   joinRoom,
   leaveRoom,
+  setRoomInfo,
   //
   sendChat,
 }

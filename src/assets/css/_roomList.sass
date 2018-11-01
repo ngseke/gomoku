@@ -1,5 +1,5 @@
 #room-list
-  max-height: 22rem
+  height: 23rem
   overflow-x: hidden
   overflow-y: scroll
   ul
@@ -26,10 +26,12 @@
         +flex-center
         flex-direction: row
         justify-content: space-between
-        b
-          font-weight: normal
+        .date
+          color: $gray-500
         .icon
           margin-right: .25rem
+        b
+          font-weight: normal
       &.empty
         .player-count
           color: $gray-500

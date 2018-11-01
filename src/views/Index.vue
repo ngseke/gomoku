@@ -17,14 +17,14 @@ main
               h3(:title='fingerprint') #[fa(icon='rocket')] {{ profile.name }}
             div(v-else) #[fa(icon='ellipsis-h')]
       .col.mt-5.mt-md-0
-        //- h2 Recently Created
+        h2 Room List
         #room-list
           ul
             transition-group(name='chat-item')
               li(v-for='i in roomList' :key='i.key' @click='enterRoom(i.key)' :class='getRoomItemClass(getPlayersCount(i.players))')
                 h4(v-if='i.info') {{ i.info.name }} #[small {{ i.key }}]
                 .description
-                  span(v-if='i.info') {{ convertDate(i.info.createDate, true) }}
+                  span.date(v-if='i.info') {{ convertDate(i.info.createDate, true) }}
                   span.player-count
                     span.icon #[fa(icon='user')]
                     | #[b {{ getPlayersCount(i.players) }}]/2
@@ -81,10 +81,6 @@ export default {
       if (await db.getIsRoomExist(id) && this.getPlayersCount(this.rooms[id].players) < 2)
         this.$router.push({ name: `Room`, params: { id } })
       else this.isLoading = false
-    },
-    getPlayersCount (players) {
-      if (players) return Object.keys(players).length
-      else return 0
     },
     getRoomItemClass (n) {
       const classMap = {
