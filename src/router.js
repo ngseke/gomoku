@@ -25,14 +25,13 @@ export default new Router({
       component: () => import('./views/ModifyProfile.vue')
     },
     {
-      path: '/room',
+      path: '/room/:id',
       name: 'Room',
       component: () => import('./views/Room.vue')
     },
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   component: () => import('./views/About.vue')
-    // }
+    {
+      path: '/**',
+      component: Index
+    },
   ]
 })

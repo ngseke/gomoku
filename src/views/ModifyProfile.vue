@@ -5,7 +5,7 @@ main
     .row.justify-content-center.align-items-center.mt-3
       .col-12.col-md-6.col-lg-5.col-xl-4(v-if='fingerprint && profile')
         Nickname(v-model.trim='name' @confirm='confirm' @cancel='goToIndex()' :isFirst='false')
-      .col-12.loading(v-else)
+      .col-12.loader(v-else)
         fa(icon='circle-notch' spin)
       //- .col-12
         .fingerprint {{ fingerprint }}
@@ -60,6 +60,6 @@ export default {
   font-size: .8rem
   text-align: center
 
-.loading
+.loader
   text-align: center
 </style>

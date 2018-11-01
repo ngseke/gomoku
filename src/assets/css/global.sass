@@ -2,12 +2,18 @@
 @import "~bootstrap/scss/bootstrap"
 
 @import "functions"
-@import "button"
 @import "dialog"
 @import "animation"
 
 html, body
   background-image: $background
+
+main
+  +flex-center
+  justify-content: flex-start
+  flex-direction: column
+  min-height: 100vh
+  letter-spacing: .1rem
 
 input
   border: 0
@@ -22,3 +28,7 @@ h2
   margin-bottom: 2rem
   display: inline-block
   letter-spacing: .1rem
+
+.loader
+  text-align: center
+  color: $gray-500

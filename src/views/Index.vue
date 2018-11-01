@@ -1,20 +1,20 @@
 <template lang="pug">
 main
   Logo
-  #lobby.container
+  #lobby.container(v-show='!isWaiting')
     .row
       .col-12.col-md-5.col-lg-5
         nav
-          router-link.block.new(href='#' :to='{ name: `Room` }')
+          a.block.new(href='#' @click='createRoom()')
             h3 New
           .block.join
             h3 Join
             .input-area
-              input(type='text' v-model='roomId' maxlength='4')
-              a.submit(href='#') #[fa(icon='check')]
+              input(type='text' v-model='roomId' @keyup.enter='enterRoom(roomId)' maxlength='4')
+              a.submit(href='#' @click='enterRoom(roomId)') #[fa(icon='check')]
           router-link.block.profile(:to='{ name: `ModifyProfile` }')
             div(v-if='profile')
-              h3(:title='fingerprint') #[fa(icon='user')] {{ profile.name }}
+              h3(:title='fingerprint') #[fa(icon='rocket')] {{ profile.name }}
             div(v-else) #[fa(icon='ellipsis-h')]
       .col.mt-5.mt-md-0
         h2 Recently Created
@@ -25,6 +25,8 @@ main
               .description
                 span 幾秒前
                 span #[fa(icon='user')] 1/2
+  .loader(v-if='isWaiting')
+    span #[fa(icon='circle-notch' spin)]
 </template>
 
 <script>
@@ -32,15 +34,16 @@ import Logo from '@/components/Logo.vue'
 import fingerprint from '@/assets/js/fingerprint'
 import room from '@/assets/js/room'
 import db from '@/assets/js/db'
-
 import moment from 'moment'
+
 export default {
   name: 'Index',
   data () {
     return {
       fingerprint: null,
       profile: null,
-      roomId: `ab10`
+      roomId: `F5XF`,
+      isWaiting: false
     }
   },
   mounted () {
@@ -53,9 +56,21 @@ export default {
         if (!profile) this.$router.push({ name: 'Register' })
         else this.profile = profile
       })
-    // db.createRoom()
   },
   methods: {
+    async createRoom () {
+      this.isWaiting = true
+      const id = await db.createRoom(this.fingerprint)
+      this.$router.push({ name: `Room`, params: { id } })
+    },
+    async enterRoom (id) {
+      this.isWaiting = true
+      if (await db.getIsRoomExist(id))
+        this.$router.push({ name: `Room`, params: { id } })
+      else this.isWaiting = false
+    }
+  },
+  computed: {
 
   },
   components: {
@@ -65,24 +80,19 @@ export default {
 </script>
 
 <style scoped lang="sass">
-main
-  // +flex-center
-  // flex-direction: column
-  // height: 100vh
-
 #lobby
   +block-border
   .row
     +my(1rem)
-  // max-width: 1000px
+
 nav
   >.block
     +flex-center
     +gradient-bg($gray-200, 10%)
     margin-bottom: 1rem
-    flex-direction: column
     min-height: 8rem
     color: white
+    transition: all .3s
     h3
       font-size: 1.5rem
       font-weight: 700
@@ -97,6 +107,7 @@ nav
         width: 100%
         margin-top: .5rem
         +flex-center
+        flex-direction: row
         +px(2rem)
         transition: all .3s
         input
@@ -117,6 +128,9 @@ nav
         color: $gray-500
         overflow: hidden
     &:hover
+      transform: scale(.95) skewX(1deg) skewY(1deg)
+      transform: scale(.98)
+      opacity: .9
 
 h2
   display: block
@@ -149,5 +163,6 @@ h2
       .description
         font-size: .8rem
         +flex-center
+        flex-direction: row
         justify-content: space-between
 </style>

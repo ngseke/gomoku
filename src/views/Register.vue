@@ -5,7 +5,7 @@ main
     .row.justify-content-center.align-items-center.mt-3
       .col-12.col-md-6.col-lg-5.col-xl-4(v-if='fingerprint')
         Nickname(v-model.trim='name' @confirm='confirm' :isFirst='true')
-      .col-12.loading(v-else)
+      .col-12.loader(v-else)
         fa(icon='circle-notch' spin)
 </template>
 
@@ -55,8 +55,5 @@ export default {
 .fingerprint
   color: $gray-500
   font-size: .8rem
-  text-align: center
-
-.loading
   text-align: center
 </style>
