@@ -10,16 +10,16 @@ main
         Chat(:roomId='roomId' :fingerprint='fingerprint' ref='chat')
       .col-12.col-md
   .loader(v-if='isLoading')
-    span #[fa(icon='circle-notch' spin)]
+    span.icon #[fa(icon='circle-notch' spin)]
     span {{ status[(status.length - 1)] }}
 </template>
 
 <script>
 import Logo from '@/components/Logo.vue'
 import Chat from '@/components/Chat.vue'
+import { common } from '@/mixins/common'
 import fingerprint from '@/assets/js/fingerprint'
 import db from '@/assets/js/db'
-
 import firebase from 'firebase/app'
 import moment from 'moment'
 import randomstring from 'randomstring'
@@ -32,13 +32,8 @@ export default {
       info: null,
       players: null,
       game: null,
-      //
-      isLoading: null,
-      fingerprint: null,
       roomId: null,
-      profile: null,
       session: null,
-      status: [``],
     }
   },
   created () {
@@ -84,15 +79,11 @@ export default {
         this.$nextTick(() => this.sendSystemInfo(`${this.profile.name} has joined.`))
       })
     },
-    convertDate (x, isFromNow = false) {
-      if (isFromNow) return moment(x).fromNow()
-      return moment(x).format(`YYYY/MM/DD HH:mm:ss`)
-    },
     async disconnect () {
       this.goToIndex()
     },
     async setProfile () {
-      this.status.push(`取得裝置指紋中`)
+      this.status.push(`取得裝置指紋`)
       this.fingerprint = await fingerprint.get()
       this.status.push(`取得玩家資訊`)
       this.profile = await db.getPlayer(this.fingerprint)
@@ -114,6 +105,7 @@ export default {
       await db.joinRoom(this.roomId, this.fingerprint)
     },
     async leaveRoom () {
+      this.isLoading = true
       this.status.push(`離開房間中`)
       this.sendSystemInfo(`${this.profile.name} has left.`)
       this.linstenList.forEach(child => db.offRoom(this.roomId, child))
@@ -128,7 +120,6 @@ export default {
       this.$refs.chat.sendChat(this.roomId, message, null)
     },
     changeRoomName () {
-      console.log(`chage`)
     }
   },
   computed: {
@@ -149,13 +140,13 @@ export default {
   },
   components: {
     Logo,
-    Chat
+    Chat,
   },
+  mixins: [common]
 }
 </script>
 
 <style scoped lang="sass">
-
 .row
   justify-content: center
   align-items: center

@@ -1,0 +1,51 @@
+#lobby
+  +block-border
+  .row
+    +my(1rem)
+
+nav
+  >.block
+    +flex-center
+    +gradient-bg($gray-200, 10%)
+    margin-bottom: 1rem
+    min-height: 8rem
+    color: white
+    transition: all .3s
+    h3
+      font-size: 1.5rem
+      font-weight: 700
+      font-style: italic
+      margin-bottom: 0
+      letter-spacing: .1rem
+    &.new
+      background-image: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%)
+    &.join
+      background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%)
+      .input-area
+        width: 100%
+        margin-top: .5rem
+        +flex-center
+        flex-direction: row
+        +px(2rem)
+        transition: all .3s
+        input
+          display: inline-block
+          margin-right: .5rem
+          font-size: 1rem
+        a.submit
+          display: inline-block
+          color: white
+    &.profile
+      color: $black
+      margin-bottom: 0
+      h3
+        font-style: normal
+        font-size: 1rem
+      .fingerprint
+        font-size: .8rem
+        color: $gray-500
+        overflow: hidden
+    &:hover
+      transform: scale(.95) skewX(1deg) skewY(1deg)
+      transform: scale(.98)
+      opacity: .9

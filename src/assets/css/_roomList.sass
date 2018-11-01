@@ -1,0 +1,46 @@
+#room-list
+  max-height: 22rem
+  overflow-x: hidden
+  overflow-y: scroll
+  ul
+    display: flex
+    flex-direction: column
+    list-style: none
+    padding: 0
+    li
+      width: 100%
+      padding: .7rem 1rem
+      margin-bottom: .25rem
+      cursor: pointer
+      +block-border
+      &:hover
+        border-color: $gray-400
+      h4
+        font-weight: 400
+        font-size: 1.2rem
+        margin-bottom: .5rem
+        small
+          color: $gray-500
+      .description
+        font-size: .8rem
+        +flex-center
+        flex-direction: row
+        justify-content: space-between
+        b
+          font-weight: normal
+        .icon
+          margin-right: .25rem
+      &.empty
+        .player-count
+          color: $gray-500
+      &.waiting
+        .player-count
+          color: $blue
+          b
+            font-weight: bold
+      &.full
+        opacity: .5
+        cursor: default
+        +block-border
+        .player-count
+          color: $red
