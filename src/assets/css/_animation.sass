@@ -8,6 +8,17 @@
   transform: scale(.5)
   opacity: 0
 
+.room-item-enter-active, .room-item-leave-active
+  transition: all .4s
+  opacity: 1
+
+.room-item-enter, .room-item-leave-to
+  transform: scale(.9)
+  opacity: 0
+
+.room-item-move
+  transition: transform .4s
+
 .chat-item-enter-active
   transition: all .3s
   transform-origin: left
@@ -16,6 +27,14 @@
 .chat-item-enter, .chat-item-leave-to
   transform-origin: left
   transform: translateX(-2rem) scale(.5)
+  opacity: 0
+
+.player-item-enter-active, .player-item-leave-active
+  transition: all .2s
+  opacity: 1
+
+.player-item-enter, .player-item-leave-to
+  transform: translateY(0rem) scale(.5)
   opacity: 0
 
 @keyframes down-to-up

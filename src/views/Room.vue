@@ -5,8 +5,8 @@ main
     .row(v-show='page === `game`')
       .col-12.col-md-5.col-lg-4
         #player-list
-          ul
-            li(v-for='p in players' :title='`加入遊戲時間: ${convertDate(p.date)}`') #[fa(icon='user')]  {{ p.info.name }}
+          transition-group(name='player-item' tag='ul')
+            li(v-for='(p, i, index) in players' :title='`加入遊戲時間: ${convertDate(p.date)}`' :key='index') #[fa(icon='user')]  {{ p.info.name }}
         Chat(:roomId='roomId' :fingerprint='fingerprint' ref='chat')
       .col-12.col-md
     .row.justify-content-center.align-items-center.mt-3(v-if='page === `name`')
@@ -180,6 +180,7 @@ export default {
     display: flex
     font-size: .8rem
     margin-bottom: 0
+    flex: 1 1 auto
     li
       color: white
       background-image: $black-gradient

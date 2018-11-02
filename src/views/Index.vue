@@ -3,7 +3,7 @@ main
   Logo
   #lobby.container(v-show='!isLoading')
     .row
-      .col-12.col-md-5.col-lg-5
+      .col-12.col-md-5.col-lg-4
         nav
           a.block.new(href='#' @click='createRoom()')
             h3 New
@@ -19,15 +19,19 @@ main
       .col.mt-5.mt-md-0
         h2 Room List
         #room-list
-          ul
-            transition-group(name='chat-item')
-              li(v-for='i in roomList' :key='i.key' @click='enterRoom(i.key)' :class='getRoomItemClass(getPlayersCount(i.players))')
+          .loader(v-if='!rooms')
+            span.icon #[fa(icon='circle-notch' spin)]
+          .no-room(v-else-if='roomList.length === 0' key='empty') No rooms
+          transition-group.row.no-gutters(name='room-item')
+            .col-12.col-lg-6(v-for='i in roomList' :key='i.key' @click='enterRoom(i.key)' )
+              .item(:class='getRoomItemClass(getPlayersCount(i.players))')
                 h4(v-if='i.info') {{ i.info.name }} #[small {{ i.key }}]
                 .description
                   span.date(v-if='i.info') {{ convertDate(i.info.createDate, true) }}
                   span.player-count
                     span.icon #[fa(icon='user')]
                     | #[b {{ getPlayersCount(i.players) }}]/2
+
   .loader(v-if='isLoading')
     span.icon #[fa(icon='circle-notch' spin)]
     span {{ status[(status.length - 1)] }}
@@ -57,16 +61,12 @@ export default {
   },
   methods: {
     async init () {
-      await fingerprint.get()
-        .then(fingerprint => {
-          this.fingerprint = fingerprint
-          return db.getPlayer(fingerprint)
-        })
-        .then(profile => {
-          if (!profile) this.$router.push({ name: 'Register' })
-          else this.profile = profile
-        })
-      db.roomRef.orderByChild('date').limitToLast(10).on(`value`, snap => {
+      this.fingerprint = await fingerprint.get()
+      const profile = await db.getPlayer(this.fingerprint)
+      if (!profile) this.$router.push({ name: 'Register' })
+      else this.profile = profile
+
+      db.roomRef.orderByChild('date').limitToLast(100).on(`value`, snap => {
         this.rooms = snap.val()
       })
     },
@@ -78,9 +78,19 @@ export default {
     },
     async enterRoom (id) {
       this.isLoading = true
-      if (await db.getIsRoomExist(id) && this.getPlayersCount(this.rooms[id].players) < 2)
-        this.$router.push({ name: `Room`, params: { id } })
-      else this.isLoading = false
+      if (id === `` || !(/^[\d|a-zA-Z]+$/.test(id))) {
+        this.isLoading = false
+        throw `Invalid room id!`
+      }
+      if (!await db.getIsRoomExist(id)) {
+        this.isLoading = false
+        throw `The room doesn't exist!`
+      }
+      if (await db.getRoomPlayerCount(id) >= 2) {
+        this.isLoading = false
+        throw `The room is full!`
+      }
+      this.$router.push({ name: `Room`, params: { id } })
     },
     getRoomItemClass (n) {
       const classMap = {
@@ -98,6 +108,7 @@ export default {
         .map((v, k) => _.merge({}, v, { key: k }))
         .sortBy('info.createDate')
         .value()
+      if (!this.rooms) return null
       return _.orderBy(result, `info.createDate`).reverse()
     }
   },

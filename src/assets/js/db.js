@@ -139,6 +139,13 @@ const offRoom = (id, child) => {
   roomRef.child(id).child(child).off()
 }
 
+const getRoomPlayerCount = async (id) => {
+  const snap = await roomRef.child(`${id}/players/`).once('value')
+  const players = snap.val()
+  if (players === null) return 0
+  return Object.keys(players).length
+}
+
 const joinRoom = async (id, fingerprint) => {
   const player = await getPlayer(fingerprint)
   const joinedPlayer = {
@@ -179,6 +186,7 @@ export default {
   //
   createRoom,
   getIsRoomExist,
+  getRoomPlayerCount,
   onRoom,
   offRoom,
   joinRoom,
