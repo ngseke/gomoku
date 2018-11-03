@@ -3,24 +3,28 @@ main
   Logo(:name='roomName' @clickRoomName='clickChangeRoomName()')
   .container(v-if='!isLoading')
     .row(v-show='page === `game`')
+      .col-12.col-md
+        Board(:game='game')
       .col-12.col-md-5.col-lg-4
         #player-list
           transition-group(name='player-item' tag='ul')
             li(v-for='(p, i, index) in players' :title='`加入遊戲時間: ${convertDate(p.date)}`' :key='index') #[fa(icon='user')]  {{ p.info.name }}
         Chat(:roomId='roomId' :fingerprint='fingerprint' ref='chat')
-      .col-12.col-md
+
     .row.justify-content-center.align-items-center.mt-3(v-if='page === `name`')
       .col-12.col-md-6.col-lg-5.col-xl-4(v-if='fingerprint')
         Nickname(v-model.trim='newRoomName' @confirm='confirmRoomName' @cancel='page = `game`' :isRoomName='true' )
   .loader(v-if='isLoading')
-    span.icon #[fa(icon='circle-notch' spin)]
     span {{ status[(status.length - 1)] }}
+    .progress: .bar(:style='{ width: `${100 * (status.length / 7)}%` }')
 </template>
 
 <script>
 import Logo from '@/components/Logo.vue'
 import Chat from '@/components/Chat.vue'
 import Nickname from '@/components/Nickname.vue'
+import Board from '@/components/Board.vue'
+
 import { common } from '@/mixins/common'
 import fingerprint from '@/assets/js/fingerprint'
 import db from '@/assets/js/db'
@@ -28,7 +32,7 @@ import room from '@/assets/js/room'
 import firebase from 'firebase/app'
 import moment from 'moment'
 import randomstring from 'randomstring'
-
+import _ from 'lodash'
 
 export default {
   name: 'Room',
@@ -49,7 +53,6 @@ export default {
     this.session = randomstring.generate({ length: 6 })
   },
   mounted () {
-    this.status.push(`初始化...`)
     this.init()
   },
   methods: {
@@ -57,12 +60,11 @@ export default {
     async init () {
       this.isLoading = true   // 設定正在載入中
 
-      await this.setProfile() // 取得玩家本人資料
+      await this.setProfile()       // 取得玩家本人資料
       await this.checkRepeatLogin() // 檢查是否重複登入
-      await this.checkRoom()  // 檢查房間是否存在
-      await this.joinRoom()   // 加入房間
-
-      this.status.push(`監聽房間`)
+      await this.checkRoom()        // 檢查房間是否存在
+      await this.checkPlayerCount()
+      await this.joinRoom()         // 加入房間
 
       // 監聽房間內 linstenList 列表中所有子節點
       this.linstenList.forEach(child => {
@@ -79,7 +81,7 @@ export default {
       db.roomRef.child(`${this.roomId}/players/${this.fingerprint}`).onDisconnect().remove()
       // 2. 聊天室插入離開訊息
       db.roomRef.child(`${this.roomId}/chat/${this.session}`).onDisconnect().set({
-        date:  firebase.database.ServerValue.TIMESTAMP,
+        date: firebase.database.ServerValue.TIMESTAMP,
         content: `${this.profile.name} has accidentally left.`
       })
 
@@ -116,8 +118,15 @@ export default {
         throw `The room doesn't exist.`
       }
     },
+    async checkPlayerCount () {
+      this.status.push(`檢查參加人數`)
+      if (await db.getRoomPlayerCount(this.roomId) >= 2) {
+        this.disconnect()
+        throw `The room is full!`
+      }
+    },
     async joinRoom () {
-      this.status.push(`登記中`)
+      this.status.push(`加入中`)
       await db.joinRoom(this.roomId, this.fingerprint)
     },
     async leaveRoom () {
@@ -148,6 +157,7 @@ export default {
       if (name.trim() === ``) throw `Empty room name!`
       const info = { name }
       await db.setRoomInfo(this.roomId, info)
+      await this.$refs.chat.sendChat(this.roomId, `Room Name has been changed to '${name}'`, null)
     }
   },
   computed: {
@@ -158,13 +168,13 @@ export default {
   watch: {
   },
   beforeDestroy () {
-    console.log(`beforeDestroy`)
     this.leaveRoom()
   },
   components: {
     Logo,
     Chat,
     Nickname,
+    Board,
   },
   mixins: [common]
 }
@@ -174,6 +184,10 @@ export default {
 .row
   justify-content: center
   align-items: center
+
+.col-md
+  overflow: scroll
+  margin-bottom: 1rem
 
 #player-list
   ul

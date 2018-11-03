@@ -1,13 +1,13 @@
 #chat
+  +block-border
   text-align: left
   font-size: .8rem
   padding: 1rem
   letter-spacing: .05rem
   transition: border .3s
-  border: 1px solid rgba(#fad0c4, 0)
   margin: 1rem 0
   width: 100%
-
+  border: 1px solid rgba(#fad0c4, .8)
   &:hover
     border: 1px solid rgba(#fad0c4, .8)
   ul
@@ -45,6 +45,7 @@
   .input-area
     display: flex
     align-items: center
+    margin-bottom: .75rem
     .icon
       margin-right: .5rem
       i
@@ -61,3 +62,13 @@
       &::placeholder
         font-style: italic
         color: rgba(black, .3)
+  .shortcut
+    a.word
+      display: inline-block
+      +block-border
+      padding: .1rem .25rem
+      margin: 0 .2rem .2rem 0
+      color: #fa709a
+      transition: background-color .2s
+      &:hover
+        background-color: $gray-200

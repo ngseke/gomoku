@@ -11,7 +11,9 @@
           |  {{ i.content }}
   .input-area
     span.icon #[i.fas.fa-comment-alt]
-    input(type='text' v-model.trim='chatInputText' @keyup.enter='enter(roomId, chatInputText, fingerprint)' placeholder='' max='100')
+    input(type='text' v-model.trim='chatInputText' @keyup.enter='enter(roomId, chatInputText, fingerprint)' placeholder='' maxlength='100')
+  .shortcut(title='點擊發送短語，快速地問候對方和他媽媽')
+    a.word(href='#' v-for='i in words' @click='sendChat(roomId, i, fingerprint)') {{ i }}
 </template>
 
 <script>
@@ -26,6 +28,7 @@ export default {
       childName: `chat`,
       chat: null,
       chatInputText: ``,
+      words: [`你好`, `晚安`, `GG`, `謝謝`, `掰哺`]
     }
   },
   props: {

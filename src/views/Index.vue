@@ -15,12 +15,12 @@ main
           router-link.block.profile(:to='{ name: `ModifyProfile` }')
             div(v-if='profile')
               h3(:title='fingerprint') #[fa(icon='rocket')] {{ profile.name }}
-            div(v-else) #[fa(icon='ellipsis-h')]
+            div(v-else): fa(icon='ellipsis-h')
       .col.mt-5.mt-md-0
         h2 Room List
         #room-list
           .loader(v-if='!rooms')
-            span.icon #[fa(icon='circle-notch' spin)]
+            span.icon: fa(icon='circle-notch' spin)
           .no-room(v-else-if='roomList.length === 0' key='empty') No rooms
           transition-group.row.no-gutters(name='room-item')
             .col-12.col-lg-6(v-for='i in roomList' :key='i.key' @click='enterRoom(i.key)' )
@@ -31,10 +31,13 @@ main
                   span.player-count
                     span.icon #[fa(icon='user')]
                     | #[b {{ getPlayersCount(i.players) }}]/2
-
   .loader(v-if='isLoading')
-    span.icon #[fa(icon='circle-notch' spin)]
+    span.icon: fa(icon='circle-notch' spin)
     span {{ status[(status.length - 1)] }}
+  footer
+    span= `build: ${+new Date()} `
+    span(v-if='fingerprint')  / #[fa(icon='fingerprint')] {{ fingerprint }}
+    span(v-if='profile')  / #[fa(icon='window-maximize')] {{ profile.browser.name }}
 </template>
 
 <script>
@@ -78,6 +81,7 @@ export default {
     },
     async enterRoom (id) {
       this.isLoading = true
+      id = id.toUpperCase()
       if (id === `` || !(/^[\d|a-zA-Z]+$/.test(id))) {
         this.isLoading = false
         throw `Invalid room id!`
@@ -129,7 +133,11 @@ export default {
 h2
   display: block
   text-transform: uppercase
-  margin-bottom: 1rem
+  margin-bottom: .5rem
   text-align: center
 
+footer
+  margin-top: 2rem
+  color: $gray-500
+  font-size: .8rem
 </style>

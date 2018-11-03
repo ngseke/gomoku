@@ -45,7 +45,7 @@ nav
         font-size: .8rem
         color: $gray-500
         overflow: hidden
-    &:hover
-      transform: scale(.95) skewX(1deg) skewY(1deg)
-      transform: scale(.98)
-      opacity: .9
+    &:hover:not(.join)
+        transform: scale(.98) skewX(-.5deg) skewY(-.5deg)
+        // transform: scale(.98)
+        opacity: .8

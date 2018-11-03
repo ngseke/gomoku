@@ -21,6 +21,7 @@ ul
 
 input
   border: 0
+  border-radius: 0
   width: 100%
   background-image: $input-background-image
   letter-spacing: .1rem
@@ -38,5 +39,15 @@ h2
   height: 100%
   text-align: center
   color: $gray-500
+  font-size: .8rem
   .icon
     margin-bottom: .5rem
+  .progress
+    width: 5rem
+    height: 2px
+    background-color: $gray-500
+    margin-top: .25rem
+    .bar
+      width: 50%
+      background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)
+      transition: width .5s
