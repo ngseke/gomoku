@@ -65,8 +65,7 @@ const createRoom = (creatorId = null) => {
     },
     players: {},
     chat: {
-      0: { content: `[Created Date] ${moment().format('YYYY/MM/DD HH:mm:ss')}`, date },
-      1: { content: `** 請勿發送私人敏感訊息 **`, date },
+      // 0: { content: `[Created Date] ${moment().format('YYYY/MM/DD HH:mm:ss')}`, date },
     },
     game: {
       board,
@@ -182,7 +181,7 @@ const sendGame = async (id, game) => {
 const sendChat = async (id, content, fingerprint = null) => {
   const player = (fingerprint) ? await getPlayer(fingerprint) : null
   const message = {
-    date: +new Date(),
+    date: firebase.database.ServerValue.TIMESTAMP,
     player,
     content,
   }

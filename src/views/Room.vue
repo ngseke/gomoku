@@ -5,9 +5,13 @@ main
     .row(v-show='page === `game`')
       .col-12.col-md
         Board(ref='board' :game='game' :chess='myChess' :fingerprint='fingerprint' @clickBlock='clickBlock' @sendGame='sendGame')
+        .result(v-if='$refs.board && $refs.board.isIWin !== null')
+          transition-group(name='block-item')
+            .win(v-if='$refs.board.isIWin === true' key='you-win-text') 你贏了
+            .lose(v-if='$refs.board.isIWin === false' key='you-lost-text') 你輸了
         .status(v-if='$refs.board')
           span(v-if='$refs.board.timeToStart === null') ...
-          span(v-else-if='$refs.board.timeToStart >= 0') #[fa(icon='stopwatch')] 等待下一局開始... ({{ $refs.board.timeToStart }})
+          span(v-else-if='$refs.board.timeToStart >= 0') #[fa(icon='stopwatch')] 稍後下一局即將開始... ({{ $refs.board.timeToStart }})
           span(v-else-if='$refs.board.isFirstTime === true') 誰都可以先下
           span.my-turn(v-else-if='$refs.board.isMyTurn === true') #[fa(icon='arrow-circle-up')] 換你了
           span.waiting(v-else-if='$refs.board.isMyTurn === false') #[fa(icon='stopwatch')] 等對方下...
@@ -52,6 +56,7 @@ export default {
       session: null,
       page: `game`,
       newRoomName: ``,
+
     }
   },
   created () {
@@ -100,7 +105,6 @@ export default {
 
       this.$nextTick(() => {
         this.sendSystemInfo(`${this.profile.name} has joined.`)
-        // this.$refs.board.setTimer()
       })
 
       this.isLoading = false
@@ -234,13 +238,43 @@ export default {
 </script>
 
 <style scoped lang="sass">
+$win-color: #00f2fe
+$lose-color: #fad0c4
+
+@function long-shadow($color, $number)
+  $val: 0px 0px $color
+  @for $i from 1 through $number
+    $val: #{$val}, -#{$i * .5}px -#{$i * .5}px 0 $color
+  @return $val
+
 .row
   justify-content: center
-  // align-items: center
 
 .col-md
-  overflow: scroll
+  overflow: hidden
   margin-bottom: 1rem
+  position: relative
+
+@include media-breakpoint-down(md)
+  .col-md
+    overflow: scroll
+
+.result
+  +flex-center
+  z-index: 100
+  position: absolute
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  font-size: 3rem
+  font-weight: 900
+  .win
+    text-shadow: long-shadow(darken($win-color, 20%), 15)
+    color: $win-color
+  .lose
+    text-shadow: long-shadow(darken($lose-color, 20%), 15)
+    color: $lose-color
 
 .status
   text-align: center
@@ -278,11 +312,10 @@ export default {
         right: 0
         bottom: -7px
         border-radius: 100rem
-        background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%)
         background-image: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%)
         transition: transform .4s, opacity .4s
         transform: scaleX(0)
-        opacity: 0
+        opacity: .5
       &.turn::after
         transform: none
         opacity: 1

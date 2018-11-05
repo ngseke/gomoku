@@ -6,14 +6,14 @@
         div(v-if='i.player')
           b [{{ i.player.name }}]
           span.content  {{ i.content }}
-          //- span.time {{ convertDate(i.date, true) }}
+          span.time {{ convertDate(i.date, true) }}
         .info(v-else)
           |  {{ i.content }}
   .input-area
     span.icon #[i.fas.fa-comment-alt]
     input(type='text' v-model.trim='chatInputText' @keyup.enter='enter(roomId, chatInputText, fingerprint)' placeholder='' maxlength='100')
   .shortcut(title='點擊發送短語，快速地問候對方和他媽媽')
-    a.word(href='#' v-for='i in words' @click='sendChat(roomId, i, fingerprint)') {{ i }}
+    a.word(href='#' v-for='i in words' @click='debouncedSendChat(roomId, i, fingerprint)') {{ i }}
 </template>
 
 <script>
@@ -28,7 +28,7 @@ export default {
       childName: `chat`,
       chat: null,
       chatInputText: ``,
-      words: [`你好`, `晚安`, `GG`, `謝謝`, `掰哺`]
+      words: [`你好`, `GG`, `謝謝`, `掰哺`, `快一點`, `手滑了`, `幹🖕`, `女束攵`]
     }
   },
   props: {
@@ -41,11 +41,13 @@ export default {
       default: null,
     }
   },
+  created () {
+    // this.debouncedEnter = _.debounce(this.enter, 500, { leading: true, trailing: false })
+    this.debouncedSendChat = _.debounce(this.sendChat, 500, { leading: true, trailing: false })
+  },
   mounted() {
     if (this.roomId)
       db.onRoom(this.roomId, this.childName, (data) => this[this.childName] = data)
-    else {
-    }
   },
   methods: {
     enter () {
@@ -62,7 +64,6 @@ export default {
     },
   },
   beforeDestroy () {
-    console.log(`beforeDestroy ${this.childName}`)
     db.offRoom(this.roomId, this.childName)
   },
   computed: {

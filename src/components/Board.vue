@@ -9,15 +9,15 @@
           .block(id=`b${row}${col}` ref=`block${row}${col}` @click=`clickBlock(${row}, ${col})`  :class=`getBlockClass(${row}, ${col})`)
             .line(:class=`getLineClass(${row}, ${col})`)
             .mini-dot
-            .chess.preview(v-if=`isMyTurn && board[${row}][${col}] === 0` )
-            transition(name='block-item' mode='out-in')
+            .chess.preview(v-if=`isMyTurn && board[${row}][${col}] === 0`)
+            transition-group(name='block-item' style={ zIndex: 50 })
               .chess.black(v-if=`board[${row}][${col}] === 1` key=`chess1-${row}${col}`)
-            transition(name='block-item' mode='out-in')
-              .chess.white(v-if=`board[${row}][${col}] === 2` key=`chess2-${row}${col}`)
+              .chess.white(v-else-if=`board[${row}][${col}] === 2` key=`chess2-${row}${col}`)
 </template>
 
 <script>
 import moment from 'moment'
+import firebase from 'firebase/app'
 import chessBoard from '@/assets/js/chessBoard'
 
 const interval = 20
@@ -52,6 +52,7 @@ export default {
 
       if (nextGame.previous.chess === this.chess) return `Not your turn!`
       if (nextGame.board[row][col] !== 0) return `This place has been taken!`
+      if (this.isWaiting) return `Now waiting!`
 
       nextGame.board[row][col] = this.chess
       nextGame.previous = {
@@ -62,7 +63,7 @@ export default {
       const checkWinner = chessBoard.checkFullBoard(this.board)
       if (checkWinner.chess !== 0) {
         nextGame.result = {
-          date: +new Date(),
+          date: firebase.database.ServerValue.TIMESTAMP ,
           player: this.fingerprint,
           content: checkWinner,
           board: nextGame.board.slice()
@@ -77,7 +78,6 @@ export default {
       const previous = this.game.previous
 
       return {
-
         previous: previous.position ? (previous.position.row === row && previous.position.col === col) : false
       }
     },
@@ -129,6 +129,9 @@ export default {
     isFirstTime () {
       return this.game ? (this.game.previous.chess === 0) : null
     },
+    isIWin () {
+      return this.isWaiting ? (this.game.result.content.chess === this.chess) : null
+    },
     isMyTurn () {
       return this.game ? (this.game.previous.chess !== this.chess) : null
     },
@@ -158,6 +161,7 @@ $block-size: 2rem
 $num-per-row: 15
 $inner-border-color: $gray-400
 $outter-border-color: $gray-400
+$mini-dot-size: .3rem
 
 #board
   +flex-center
@@ -186,7 +190,6 @@ $outter-border-color: $gray-400
   height: $block-size
   margin: 0
   +flex-center
-  $mini-dot-size: .3rem
   .mini-dot
     position: absolute
     border: 0
@@ -194,8 +197,8 @@ $outter-border-color: $gray-400
     width: $mini-dot-size
     height: $mini-dot-size
     background-color: $inner-border-color
-    top: calc(50% - $mini-dot-size / 2)
-    left: calc(50% - $mini-dot-size / 2)
+    top: calc(50% - #{$mini-dot-size} / 2)
+    left: calc(50% - #{$mini-dot-size} / 2)
     z-index: 1
   &.previous
     background-color: rgba($gray-500, .3)

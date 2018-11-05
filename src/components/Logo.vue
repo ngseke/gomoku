@@ -3,10 +3,6 @@
   h1
     a(href='#' @click='back()' v-if='name'): fa(icon='angle-left')
     span  Xiaqi
-    |
-    //- img(src='@/assets/logo.png')
-    //- a(href='https://console.firebase.google.com/u/0/project/xiaqi-game/database' target='_blank')
-    //-   img(src='https://cdn-images-1.medium.com/max/1600/1*R4c8lHBHuH5qyqOtZb3h-w.png')
   h2(v-if='name' @click='clickRoomName()') {{ name }}
 </template>
 
@@ -33,7 +29,7 @@ export default {
 <style scoped lang="sass">
 #logo
   +flex-center
-  +my(1rem)
+  +my(.5rem)
   margin-top: 2rem
 
 h1
