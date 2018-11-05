@@ -9,8 +9,8 @@ main
           span(v-if='$refs.board.timeToStart === null') ...
           span(v-else-if='$refs.board.timeToStart >= 0') #[fa(icon='stopwatch')] 等待下一局開始... ({{ $refs.board.timeToStart }})
           span(v-else-if='$refs.board.isFirstTime === true') 誰都可以先下
-          span(v-else-if='$refs.board.isMyTurn === true') 換你了
-          span(v-else-if='$refs.board.isMyTurn === false') #[fa(icon='stopwatch')] 等對方下...
+          span.my-turn(v-else-if='$refs.board.isMyTurn === true') #[fa(icon='arrow-circle-up')] 換你了
+          span.waiting(v-else-if='$refs.board.isMyTurn === false') #[fa(icon='stopwatch')] 等對方下...
       .col-12.col-md-5.col-lg-4
         #player-list
           transition-group(name='player-item' tag='ul')
@@ -193,7 +193,9 @@ export default {
     getPlayerItemClass (chess) {
       return {
         black: chess === 1,
-        white: chess === 2
+        white: chess === 2,
+        me: chess === this.myChess,
+        turn: this.boardRef ? (this.boardRef.whosTurn === chess) : false,
       }
     }
   },
@@ -207,6 +209,9 @@ export default {
       } catch (e) {
         return null
       }
+    },
+    boardRef () {
+      return this.$refs.board ? this.$refs.board : null
     }
   },
   watch: {
@@ -231,7 +236,7 @@ export default {
 <style scoped lang="sass">
 .row
   justify-content: center
-  align-items: center
+  // align-items: center
 
 .col-md
   overflow: scroll
@@ -239,6 +244,11 @@ export default {
 
 .status
   text-align: center
+  .my-turn
+    font-weight: bold
+  .waiting
+    color: $gray-700
+    font-style: italic
 
 #player-list
   ul
@@ -247,8 +257,9 @@ export default {
     margin-bottom: 0
     flex: 1 1 auto
     li
+      position: relative
       color: $black
-      background-image: $gray-300
+      background-color: $gray-300
       margin-right: .5rem
       padding: .1rem .5rem
       border-radius: 100px
@@ -258,5 +269,21 @@ export default {
       &.white
         background-image: $white-gradient
         border: 1px solid $gray-500
-
+      &::after
+        content: ''
+        position: absolute
+        width: 100%
+        height: 3px
+        left: 0
+        right: 0
+        bottom: -7px
+        border-radius: 100rem
+        background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%)
+        background-image: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%)
+        transition: transform .4s, opacity .4s
+        transform: scaleX(0)
+        opacity: 0
+      &.turn::after
+        transform: none
+        opacity: 1
 </style>

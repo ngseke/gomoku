@@ -2,12 +2,14 @@
 - const size = 15
 #board
   .result
-  .area(v-if='board')
+  .area(v-if='board' :class='areaClass')
     - for (let row = 0; row < size; row++)
       .row
         - for (let col = 0; col < size; col++)
-          .block(id=`b${row}${col}` ref=`block${row}${col}` @click=`clickBlock(${row}, ${col})`  :class=`{ previous: isBlockPrevious(${row}, ${col}) }`)
+          .block(id=`b${row}${col}` ref=`block${row}${col}` @click=`clickBlock(${row}, ${col})`  :class=`getBlockClass(${row}, ${col})`)
             .line(:class=`getLineClass(${row}, ${col})`)
+            .mini-dot
+            .chess.preview(v-if=`isMyTurn && board[${row}][${col}] === 0` )
             transition(name='block-item' mode='out-in')
               .chess.black(v-if=`board[${row}][${col}] === 1` key=`chess1-${row}${col}`)
             transition(name='block-item' mode='out-in')
@@ -18,7 +20,7 @@
 import moment from 'moment'
 import chessBoard from '@/assets/js/chessBoard'
 
-const interval = 5
+const interval = 20
 
 export default {
   name: 'Board',
@@ -58,7 +60,6 @@ export default {
       }
 
       const checkWinner = chessBoard.checkFullBoard(this.board)
-      console.log(checkWinner)
       if (checkWinner.chess !== 0) {
         nextGame.result = {
           date: +new Date(),
@@ -67,29 +68,32 @@ export default {
           board: nextGame.board.slice()
         }
         nextGame.board = chessBoard.getNewBoard(15)
+        nextGame.previous.position = null
       }
 
       this.$emit(`clickBlock`, nextGame)
     },
-    isBlockPrevious (row, col) {
-      return false
+    getBlockClass (row, col) {
+      const previous = this.game.previous
+
+      return {
+
+        previous: previous.position ? (previous.position.row === row && previous.position.col === col) : false
+      }
     },
     getLineClass (row, col) {
       return ``
     },
     setTimer () {
-      console.log(`setTimer`)
       if (this.timer === null) {
         this.timer = setInterval(this.setTimeToStart, 500)
       }
     },
     clearTimer () {
-      console.log(`clearTimer`)
       clearInterval(this.timer)
       this.timer = null
     },
     setTimeToStart () {
-      console.log(`setTimeToStart`)
       if (!this.game || !this.game.result) {
         this.timeToStart = -1
         this.clearTimer()
@@ -111,9 +115,6 @@ export default {
     },
   },
   computed: {
-    // board () {
-    //   return this.game ? this.game.board : null
-    // },
     board () {
       if(this.timeToStart === null) return null
       if (this.timeToStart < 0) {
@@ -121,6 +122,9 @@ export default {
       } else {
         return (this.game.result) ? this.game.result.board : null
       }
+    },
+    areaClass () {
+      return { disabled: !this.isMyTurn }
     },
     isFirstTime () {
       return this.game ? (this.game.previous.chess === 0) : null
@@ -131,6 +135,12 @@ export default {
     isWaiting () {
       return this.timeToStart >= 0 && this.timeToStart !== null
     },
+    whosTurn () {
+      if (!this.game) return null
+      else if (this.game.previous.chess === 1) return 2
+      else if (this.game.previous.chess === 2) return 1
+      return null
+    }
   },
   watch: {
     'game.board': {
@@ -146,8 +156,8 @@ export default {
 <style scoped lang="sass">
 $block-size: 2rem
 $num-per-row: 15
-$inner-border-color: $gray-500
-$outter-border-color: $gray-600
+$inner-border-color: $gray-400
+$outter-border-color: $gray-400
 
 #board
   +flex-center
@@ -155,6 +165,9 @@ $outter-border-color: $gray-600
   width: $block-size * $num-per-row
   margin: auto
   position: relative
+
+.area.disabled
+  cursor: not-allowed
 
 .result
   position: absolute
@@ -173,32 +186,52 @@ $outter-border-color: $gray-600
   height: $block-size
   margin: 0
   +flex-center
+  $mini-dot-size: .3rem
+  .mini-dot
+    position: absolute
+    border: 0
+    border-radius: $mini-dot-size
+    width: $mini-dot-size
+    height: $mini-dot-size
+    background-color: $inner-border-color
+    top: calc(50% - $mini-dot-size / 2)
+    left: calc(50% - $mini-dot-size / 2)
+    z-index: 1
+  &.previous
+    background-color: rgba($gray-500, .3)
+  &:hover
+    .chess.preview
+      border: dotted rgba($gray-500, .5) 2px
   &::after
     position: absolute
     top: 50%
     width: 100%
     content: ''
     border-top: solid $inner-border-color 1px
-    z-index: 1
+    z-index: 10
   &::before
     position: absolute
     left: 50%
     height: 100%
     content: ''
     border-left: solid $inner-border-color 1px
-    z-index: 1
+    z-index: 10
 
 .chess
   height: $block-size - .5rem
   width: $block-size - .5rem
   border-radius: 100%
-  z-index: 2
+  z-index: 20
+
   &.black
     background-image: $black-gradient
   &.white
-    border: solid $gray-300 1px
+    border: solid $gray-500 1px
     background-color: white
     background-image: $white-gradient
+  &.preview
+    transition: all .1s
+    border: dotted rgba($gray-500, 0) 2px
 
 #board
   .area

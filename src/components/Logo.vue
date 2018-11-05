@@ -63,6 +63,7 @@ h2
   cursor: pointer
   transform: translateY(-.2rem) skewX(15deg)
   background-clip: border-box
-  background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)
+  // background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)
+  background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%)
   text-shadow: 0 0 5px rgba(black, .3)
 </style>
