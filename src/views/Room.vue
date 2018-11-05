@@ -1,14 +1,20 @@
 <template lang="pug">
 main
   Logo(:name='roomName' @clickRoomName='clickChangeRoomName()')
-  .container(v-if='!isLoading')
+  .container(v-show='!isLoading')
     .row(v-show='page === `game`')
       .col-12.col-md
-        Board(:game='game')
+        Board(ref='board' :game='game' :chess='myChess' :fingerprint='fingerprint' @clickBlock='clickBlock' @sendGame='sendGame')
+        .status(v-if='$refs.board')
+          span(v-if='$refs.board.timeToStart === null') ...
+          span(v-else-if='$refs.board.timeToStart >= 0') #[fa(icon='stopwatch')] 等待下一局開始... ({{ $refs.board.timeToStart }})
+          span(v-else-if='$refs.board.isFirstTime === true') 誰都可以先下
+          span(v-else-if='$refs.board.isMyTurn === true') 換你了
+          span(v-else-if='$refs.board.isMyTurn === false') #[fa(icon='stopwatch')] 等對方下...
       .col-12.col-md-5.col-lg-4
         #player-list
           transition-group(name='player-item' tag='ul')
-            li(v-for='(p, i, index) in players' :title='`加入遊戲時間: ${convertDate(p.date)}`' :key='index') #[fa(icon='user')]  {{ p.info.name }}
+            li(v-for='(p, i, index) in players' :title='`加入遊戲時間: ${convertDate(p.date)}`' :key='index' :class='getPlayerItemClass(p.chess)') #[fa(icon='user')]  {{ p.info.name }}
         Chat(:roomId='roomId' :fingerprint='fingerprint' ref='chat')
 
     .row.justify-content-center.align-items-center.mt-3(v-if='page === `name`')
@@ -16,7 +22,7 @@ main
         Nickname(v-model.trim='newRoomName' @confirm='confirmRoomName' @cancel='page = `game`' :isRoomName='true' )
   .loader(v-if='isLoading')
     span {{ status[(status.length - 1)] }}
-    .progress: .bar(:style='{ width: `${100 * (status.length / 7)}%` }')
+    .progress: .bar(:style='{ width: `${100 * (status.length / 8)}%` }')
 </template>
 
 <script>
@@ -64,11 +70,18 @@ export default {
       await this.checkRepeatLogin() // 檢查是否重複登入
       await this.checkRoom()        // 檢查房間是否存在
       await this.checkPlayerCount()
-      await this.joinRoom()         // 加入房間
+      const chess = await this.chooseChess()
+      await this.joinRoom(chess)         // 加入房間
 
       // 監聽房間內 linstenList 列表中所有子節點
       this.linstenList.forEach(child => {
-        db.onRoom(this.roomId, child, (data) => this[child] = data)
+        if (child === `game`) {
+          db.onRoom(this.roomId, child, (data) => {
+            this[child] = data
+          })
+        }
+        else
+          db.onRoom(this.roomId, child, (data) => this[child] = data)
       })
 
       // 當 `本機` 離線時呼叫 disconnect()
@@ -85,11 +98,19 @@ export default {
         content: `${this.profile.name} has accidentally left.`
       })
 
-      this.isLoading = false
-
       this.$nextTick(() => {
-        this.$nextTick(() => this.sendSystemInfo(`${this.profile.name} has joined.`))
+        this.sendSystemInfo(`${this.profile.name} has joined.`)
+        // this.$refs.board.setTimer()
       })
+
+      this.isLoading = false
+    },
+    clickBlock (nextGame) {
+      this.sendGame(nextGame)
+    },
+    async sendGame (game) {
+      console.log(`sendGame`)
+      db.sendGame(this.roomId, game)
     },
     async disconnect () {
       this.goToIndex()
@@ -125,9 +146,19 @@ export default {
         throw `The room is full!`
       }
     },
-    async joinRoom () {
-      this.status.push(`加入中`)
-      await db.joinRoom(this.roomId, this.fingerprint)
+    async joinRoom (chess) {
+      this.status.push(`正在加入`)
+      await db.joinRoom(this.roomId, this.fingerprint, chess)
+    },
+    async chooseChess () {
+      this.status.push(`選擇棋色中`)
+      const players = await db.getRoomPlayer(this.roomId)
+      if (players === null) return 1
+      else {
+        for (let key of Object.keys(players)) {
+          return (players[key].chess === 1) ? 2 : 1
+        }
+      }
     },
     async leaveRoom () {
       this.isLoading = true
@@ -158,14 +189,31 @@ export default {
       const info = { name }
       await db.setRoomInfo(this.roomId, info)
       await this.$refs.chat.sendChat(this.roomId, `Room Name has been changed to '${name}'`, null)
+    },
+    getPlayerItemClass (chess) {
+      return {
+        black: chess === 1,
+        white: chess === 2
+      }
     }
   },
   computed: {
     roomName () {
       return (this.info) ? this.info.name : null
     },
+    myChess () {
+      try {
+        return (this.players && this.fingerprint) ? this.players[this.fingerprint].chess : null
+      } catch (e) {
+        return null
+      }
+    }
   },
   watch: {
+    'game.board': {
+      handler () {},
+      deep: true
+    }
   },
   beforeDestroy () {
     this.leaveRoom()
@@ -189,6 +237,9 @@ export default {
   overflow: scroll
   margin-bottom: 1rem
 
+.status
+  text-align: center
+
 #player-list
   ul
     display: flex
@@ -196,9 +247,16 @@ export default {
     margin-bottom: 0
     flex: 1 1 auto
     li
-      color: white
-      background-image: $black-gradient
+      color: $black
+      background-image: $gray-300
       margin-right: .5rem
       padding: .1rem .5rem
       border-radius: 100px
+      &.black
+        color: white
+        background-image: $black-gradient
+      &.white
+        background-image: $white-gradient
+        border: 1px solid $gray-500
+
 </style>
