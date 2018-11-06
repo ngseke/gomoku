@@ -2,8 +2,8 @@
 .dialog
   h2.show-up(v-if='isRoomName') Room Name
   h2.show-up(v-else)
-    template(v-if='!isFirst') Modify
-    template(v-else) Set
+    //- template(v-if='!isFirst') Modify
+    //- template(v-else) Set
     |  Nickname
   div.input-area.show-up(:style='{ animationDelay: `.15s` }')
     input(type='text' :value='value' @input=`$emit('input', $event.target.value)` @focus='inputOnFocus()' @keyup.stop.prevent.enter='confirm()' maxlength='30')

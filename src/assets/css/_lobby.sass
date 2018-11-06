@@ -1,10 +1,9 @@
 #lobby
-  // +block-border
-  .row
+  >.row
     +my(1rem)
 
 nav
-  >.block
+  .block
     +flex-center
     +gradient-bg($gray-200, 10%)
     margin-bottom: 1rem
@@ -47,5 +46,15 @@ nav
         overflow: hidden
     &:hover:not(.join)
         transform: scale(.98) skewX(-.5deg) skewY(-.5deg)
-        // transform: scale(.98)
         opacity: .8
+
+
+@include media-breakpoint-down(sm)
+  nav
+    .block
+      min-height: 6rem
+      &.join
+        .input-area
+          +px(1rem)
+      &.profile
+        min-height: 3rem

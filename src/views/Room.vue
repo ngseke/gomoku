@@ -9,18 +9,21 @@ main
           transition-group(name='block-item')
             .win(v-if='$refs.board.isIWin === true' key='you-win-text') 你贏了
             .lose(v-if='$refs.board.isIWin === false' key='you-lost-text') 你輸了
+        //- .result
+          .win 你贏了
+          .lose 你輸了
         .status(v-if='$refs.board')
-          span(v-if='$refs.board.timeToStart === null') ...
-          span(v-else-if='$refs.board.timeToStart >= 0') #[fa(icon='stopwatch')] 稍後下一局即將開始... ({{ $refs.board.timeToStart }})
-          span(v-else-if='$refs.board.isFirstTime === true') 誰都可以先下
-          span.my-turn(v-else-if='$refs.board.isMyTurn === true') #[fa(icon='arrow-circle-up')] 換你了
-          span.waiting(v-else-if='$refs.board.isMyTurn === false') #[fa(icon='stopwatch')] 等對方下...
+          transition(name='status-text' mode='out-in')
+            span(v-if='$refs.board.timeToStart === null' key='status-0') ...
+            span.waiting(v-else-if='$refs.board.timeToStart >= 0' key='status-1') #[fa(icon='stopwatch')] 下一局即將開始... ({{ $refs.board.timeToStart }})
+            span(v-else-if='$refs.board.isFirstTime === true' key='status-2') 誰都可以先下
+            span.my-turn(v-else-if='$refs.board.isMyTurn === true' key='status-3') #[fa(icon='arrow-circle-up')] 換你了
+            span.waiting(v-else-if='$refs.board.isMyTurn === false' key='status-4') #[fa(icon='stopwatch')] 等對方下...
       .col-12.col-md-5.col-lg-4
         #player-list
           transition-group(name='player-item' tag='ul')
             li(v-for='(p, i, index) in players' :title='`加入遊戲時間: ${convertDate(p.date)}`' :key='index' :class='getPlayerItemClass(p.chess)') #[fa(icon='user')]  {{ p.info.name }}
         Chat(:roomId='roomId' :fingerprint='fingerprint' ref='chat')
-
     .row.justify-content-center.align-items-center.mt-3(v-if='page === `name`')
       .col-12.col-md-6.col-lg-5.col-xl-4(v-if='fingerprint')
         Nickname(v-model.trim='newRoomName' @confirm='confirmRoomName' @cancel='page = `game`' :isRoomName='true' )
@@ -56,7 +59,7 @@ export default {
       session: null,
       page: `game`,
       newRoomName: ``,
-
+      isLoggedIn: false,
     }
   },
   created () {
@@ -96,9 +99,9 @@ export default {
 
       // 當 `遠端` 偵測本機離線時
       // 1. 移除 players 中的玩家本人
-      db.roomRef.child(`${this.roomId}/players/${this.fingerprint}`).onDisconnect().remove()
+      await db.roomRef.child(`${this.roomId}/players/${this.fingerprint}`).onDisconnect().remove()
       // 2. 聊天室插入離開訊息
-      db.roomRef.child(`${this.roomId}/chat/${this.session}`).onDisconnect().set({
+      await db.roomRef.child(`${this.roomId}/chat/${this.session}`).onDisconnect().set({
         date: firebase.database.ServerValue.TIMESTAMP,
         content: `${this.profile.name} has accidentally left.`
       })
@@ -134,7 +137,7 @@ export default {
       if (await db.getIsLoggedIn(this.roomId, this.fingerprint)) {
         this.disconnect()
         throw `Repeated login!`
-      }
+      } else this.isLoggedIn = true
     },
     async checkRoom () {
       this.status.push(`檢查房間ID`)
@@ -165,12 +168,9 @@ export default {
       }
     },
     async leaveRoom () {
-      this.isLoading = true
-      this.status.push(`離開房間中`)
-
       this.sendSystemInfo(`${this.profile.name} has left.`)
       this.linstenList.forEach(child => db.offRoom(this.roomId, child))
-      await db.leaveRoom(this.roomId, this.fingerprint)
+      if(this.isLoggedIn) await db.leaveRoom(this.roomId, this.fingerprint)
       db.roomRef.child(`${this.roomId}/players/${this.fingerprint}`).onDisconnect().cancel()  // 解除綁定
       db.roomRef.child(`${this.roomId}/chat/${this.session}`).onDisconnect().cancel()
     },
@@ -238,85 +238,6 @@ export default {
 </script>
 
 <style scoped lang="sass">
-$win-color: #00f2fe
-$lose-color: #fad0c4
+@import "../assets/css/room"
 
-@function long-shadow($color, $number)
-  $val: 0px 0px $color
-  @for $i from 1 through $number
-    $val: #{$val}, -#{$i * .5}px -#{$i * .5}px 0 $color
-  @return $val
-
-.row
-  justify-content: center
-
-.col-md
-  overflow: hidden
-  margin-bottom: 1rem
-  position: relative
-
-@include media-breakpoint-down(md)
-  .col-md
-    overflow: scroll
-
-.result
-  +flex-center
-  z-index: 100
-  position: absolute
-  top: 0
-  left: 0
-  width: 100%
-  height: 100%
-  font-size: 3rem
-  font-weight: 900
-  .win
-    text-shadow: long-shadow(darken($win-color, 20%), 15)
-    color: $win-color
-  .lose
-    text-shadow: long-shadow(darken($lose-color, 20%), 15)
-    color: $lose-color
-
-.status
-  text-align: center
-  .my-turn
-    font-weight: bold
-  .waiting
-    color: $gray-700
-    font-style: italic
-
-#player-list
-  ul
-    display: flex
-    font-size: .8rem
-    margin-bottom: 0
-    flex: 1 1 auto
-    li
-      position: relative
-      color: $black
-      background-color: $gray-300
-      margin-right: .5rem
-      padding: .1rem .5rem
-      border-radius: 100px
-      &.black
-        color: white
-        background-image: $black-gradient
-      &.white
-        background-image: $white-gradient
-        border: 1px solid $gray-500
-      &::after
-        content: ''
-        position: absolute
-        width: 100%
-        height: 3px
-        left: 0
-        right: 0
-        bottom: -7px
-        border-radius: 100rem
-        background-image: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%)
-        transition: transform .4s, opacity .4s
-        transform: scaleX(0)
-        opacity: .5
-      &.turn::after
-        transform: none
-        opacity: 1
 </style>

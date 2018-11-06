@@ -26,7 +26,7 @@
 
 .chat-item-enter, .chat-item-leave-to
   transform-origin: left
-  transform: translateX(-2rem) scale(.5)
+  transform: translateX(-1rem) scale(.5)
   opacity: 0
 
 .player-item-enter-active, .player-item-leave-active
@@ -47,3 +47,10 @@
 .show-up
   animation: down-to-up .4s ease
   animation-fill-mode: backwards
+
+.status-text-enter-active
+  transition: transform .3s, opacity .2s
+
+.status-text-enter
+  transform: translateY(1rem)
+  opacity: 0

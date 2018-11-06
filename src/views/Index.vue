@@ -4,20 +4,23 @@ main
   #lobby.container(v-show='!isLoading')
     .row
       .col-12.col-md-5.col-lg-4
-        nav
-          a.block.new(href='#' @click='createRoom()')
-            h3 New
-          .block.join
-            h3 Join
-            .input-area
-              input(type='text' v-model='roomIdText' @keyup.enter='enterRoom(roomIdText)' maxlength='4')
-              a.submit(href='#' @click='enterRoom(roomIdText)') #[fa(icon='check')]
-          router-link.block.profile(:to='{ name: `ModifyProfile` }')
-            div(v-if='profile')
-              h3(:title='fingerprint') #[fa(icon='rocket')] {{ profile.name }}
-            div(v-else): fa(icon='ellipsis-h')
+        nav.row.no-gutters
+          .col-12.col-md-12
+            a.block.new(href='#' @click='createRoom()')
+              h3 New
+          .col.col-md-12
+            .block.join
+              h3 Join
+              .input-area
+                input(type='text' v-model='roomIdText' @keyup.enter='enterRoom(roomIdText)' maxlength='4')
+                a.submit(href='#' @click='enterRoom(roomIdText)') #[fa(icon='check')]
+          .col-12
+            router-link.block.profile(:to='{ name: `ModifyProfile` }')
+              div(v-if='profile')
+                h3(:title='fingerprint') #[fa(icon='rocket')] {{ profile.name }}
+              div(v-else): fa(icon='ellipsis-h')
       .col.mt-5.mt-md-0
-        h2 Room List
+        h2 Rooms
         #room-list
           .loader(v-if='!rooms')
             span.icon: fa(icon='circle-notch' spin)
@@ -35,9 +38,10 @@ main
     span.icon: fa(icon='circle-notch' spin)
     span {{ status[(status.length - 1)] }}
   //- footer
-    span= `build: ${+new Date()} `
-    span(v-if='fingerprint')  / #[fa(icon='fingerprint')] {{ fingerprint }}
-    span(v-if='profile')  / #[fa(icon='window-maximize')] {{ profile.browser.name }}
+    .container
+      span= `build: ${+new Date()} `
+      span(v-if='fingerprint')  / #[fa(icon='fingerprint')] {{ fingerprint }}
+      span(v-if='profile')  / #[fa(icon='window-maximize')] {{ profile.browser.name }}
 </template>
 
 <script>

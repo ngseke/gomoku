@@ -1,0 +1,158 @@
+$block-size: 2rem
+$num-per-row: 15
+$inner-border-color: $gray-400
+$outter-border-color: $gray-400
+$mini-dot-size: .3rem
+
+#board
+  +flex-center
+  height: $block-size * $num-per-row
+  width: $block-size * $num-per-row
+  margin: auto
+  position: relative
+
+.area.disabled
+  cursor: not-allowed
+
+.result
+  position: absolute
+  top: 0
+  left: 0
+  color: $red
+  z-index: 999
+
+.row
+  overflow: visible
+  white-space: nowrap
+
+.block
+  position: relative
+  width: $block-size
+  height: $block-size
+  margin: 0
+  +flex-center
+  .mini-dot
+    position: absolute
+    border: 0
+    border-radius: $mini-dot-size
+    width: $mini-dot-size
+    height: $mini-dot-size
+    background-color: $inner-border-color
+    top: calc(50% - #{$mini-dot-size} / 2)
+    left: calc(50% - #{$mini-dot-size} / 2)
+    z-index: 1
+  &.previous
+    background-color: rgba($gray-500, .3)
+  &:hover
+    .chess.preview
+      border: dotted rgba($gray-500, .5) 2px
+  &::after
+    position: absolute
+    top: 50%
+    width: 100%
+    content: ''
+    border-top: solid $inner-border-color 1px
+    z-index: 10
+  &::before
+    position: absolute
+    left: 50%
+    height: 100%
+    content: ''
+    border-left: solid $inner-border-color 1px
+    z-index: 10
+
+.chess
+  height: $block-size - .5rem
+  width: $block-size - .5rem
+  border-radius: 100%
+  z-index: 20
+  flex: 0 0 $block-size - .5rem
+  &.black
+    background-image: $black-gradient
+  &.white
+    border: solid $gray-500 1px
+    background-color: white
+    background-image: $white-gradient
+  &.preview
+    transition: all .1s
+    border: dotted rgba($gray-500, 0) 2px
+
+// 調整 (將邊框的凸出來的線去掉)
+#board
+  .area
+    .row
+      .block:first-child
+        &::after
+          right: 0
+          width: 50%
+        &::before
+          border-color: $outter-border-color
+      .block:last-child
+        &::after
+          left: 0
+          width: 50%
+        &::before
+          border-color: $outter-border-color
+      &:first-child
+        .block
+          &::before, &:first-child::before
+            bottom: 0
+            height: 50%
+          &::after
+            border-color: $outter-border-color
+          &:first-child
+            &::after
+              right: 0
+              width: 50%
+          &:last-child::after
+              left: 0
+              width: 50%
+      &:last-child
+        .block
+          &::before, &:first-child::before
+            top: 0
+            height: 50%
+          &::after
+            border-color: $outter-border-color
+          &:first-child
+            &::after
+              right: 0
+              width: 50%
+          &:last-child::after
+              left: 0
+              width: 50%
+
+$line-length: 10rem
+$line-width: .5rem
+$line-slash-offset: 4rem
+$s: .6rem
+.line
+  z-index: 200
+  height: $line-width
+  width: $line-width
+  border-radius: 100rem
+  background-image: linear-gradient(120deg, #fccb90 0%, #d57eeb 100%)
+  opacity: .8
+  position: absolute
+  top: 0
+  left: 0
+  transform-origin: center top
+  transition: width 1s $time-function, height 1s $time-function
+  &.right  // 橫
+    width: $line-length
+    top: calc(50% - #{$line-width} / 2)
+  &.bottom  // 直
+    height: $line-length
+    left: calc(50% - #{$line-width} / 2)
+  &.topRight  // 斜線
+    height: $line-length + $line-slash-offset
+    transform: rotateZ(45deg + 180deg)
+    top: calc(50% + 1rem)
+    left: calc(50% - 1.2rem)
+  &.bottomRight  // 反斜線
+    height: $line-length + $line-slash-offset
+    transform: rotateZ(-45deg)
+    top: calc(50% - 1rem)
+    left: calc(50% - 1.2rem)
+  &.hidden
+    opacity: 0

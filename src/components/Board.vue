@@ -10,7 +10,7 @@
             .line(:class=`getLineClass(${row}, ${col})`)
             .mini-dot
             .chess.preview(v-if=`isMyTurn && board[${row}][${col}] === 0`)
-            transition-group(name='block-item' style={ zIndex: 50 })
+            transition(name='block-item' style={ zIndex: 50 })
               .chess.black(v-if=`board[${row}][${col}] === 1` key=`chess1-${row}${col}`)
               .chess.white(v-else-if=`board[${row}][${col}] === 2` key=`chess2-${row}${col}`)
 </template>
@@ -82,7 +82,20 @@ export default {
       }
     },
     getLineClass (row, col) {
-      return ``
+      const classObject = {}
+      if (!this.isWaiting) {
+        classObject.hidden = true
+      } else {
+        const direction = this.game.result.content.direction
+        const resultRow = this.game.result.content.row
+        const resultCol = this.game.result.content.col
+        if (this.isWaiting && this.game)
+          if (row === resultRow && col === resultCol)
+            classObject[direction] = true
+        else classObject.hidden = true
+      }
+
+      return classObject
     },
     setTimer () {
       if (this.timer === null) {
@@ -157,127 +170,6 @@ export default {
 </script>
 
 <style scoped lang="sass">
-$block-size: 2rem
-$num-per-row: 15
-$inner-border-color: $gray-400
-$outter-border-color: $gray-400
-$mini-dot-size: .3rem
-
-#board
-  +flex-center
-  height: $block-size * $num-per-row
-  width: $block-size * $num-per-row
-  margin: auto
-  position: relative
-
-.area.disabled
-  cursor: not-allowed
-
-.result
-  position: absolute
-  top: 0
-  left: 0
-  color: $red
-  z-index: 999
-
-.row
-  overflow: visible
-  white-space: nowrap
-
-.block
-  position: relative
-  width: $block-size
-  height: $block-size
-  margin: 0
-  +flex-center
-  .mini-dot
-    position: absolute
-    border: 0
-    border-radius: $mini-dot-size
-    width: $mini-dot-size
-    height: $mini-dot-size
-    background-color: $inner-border-color
-    top: calc(50% - #{$mini-dot-size} / 2)
-    left: calc(50% - #{$mini-dot-size} / 2)
-    z-index: 1
-  &.previous
-    background-color: rgba($gray-500, .3)
-  &:hover
-    .chess.preview
-      border: dotted rgba($gray-500, .5) 2px
-  &::after
-    position: absolute
-    top: 50%
-    width: 100%
-    content: ''
-    border-top: solid $inner-border-color 1px
-    z-index: 10
-  &::before
-    position: absolute
-    left: 50%
-    height: 100%
-    content: ''
-    border-left: solid $inner-border-color 1px
-    z-index: 10
-
-.chess
-  height: $block-size - .5rem
-  width: $block-size - .5rem
-  border-radius: 100%
-  z-index: 20
-
-  &.black
-    background-image: $black-gradient
-  &.white
-    border: solid $gray-500 1px
-    background-color: white
-    background-image: $white-gradient
-  &.preview
-    transition: all .1s
-    border: dotted rgba($gray-500, 0) 2px
-
-#board
-  .area
-    .row
-      .block:first-child
-        &::after
-          right: 0
-          width: 50%
-        &::before
-          border-color: $outter-border-color
-      .block:last-child
-        &::after
-          left: 0
-          width: 50%
-        &::before
-          border-color: $outter-border-color
-      &:first-child
-        .block
-          &::before, &:first-child::before
-            bottom: 0
-            height: 50%
-          &::after
-            border-color: $outter-border-color
-          &:first-child
-            &::after
-              right: 0
-              width: 50%
-          &:last-child::after
-              left: 0
-              width: 50%
-      &:last-child
-        .block
-          &::before, &:first-child::before
-            top: 0
-            height: 50%
-          &::after
-            border-color: $outter-border-color
-          &:first-child
-            &::after
-              right: 0
-              width: 50%
-          &:last-child::after
-              left: 0
-              width: 50%
+@import "../assets/css/board"
 
 </style>
