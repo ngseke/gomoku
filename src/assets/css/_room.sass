@@ -21,7 +21,7 @@ $lose-color: #ffa3b0
 
 .result
   +flex-center
-  z-index: 100
+  z-index: 150
   position: absolute
   top: 0
   left: 0
@@ -29,21 +29,23 @@ $lose-color: #ffa3b0
   height: 100%
   font-size: 3.5rem
   font-weight: 900
+  // .win, .lose
+    &:hover
+      opacity: .5
   .win
     text-shadow: long-shadow(darken($win-color, 15%), 15)
     color: $win-color
-
   .lose
     text-shadow: long-shadow(darken($lose-color, 15%), 15)
     color: $lose-color
 
 .status
   text-align: center
+
   span
     display: inline-block
   .my-turn
     font-weight: bold
-    // color: #fe4a49
   .waiting
     color: $gray-700
     font-style: italic
@@ -83,3 +85,25 @@ $lose-color: #ffa3b0
       &.turn::after
         transform: none
         opacity: 1
+
+#chat-toggle-btn
+  a
+    color: $gray-500
+    span
+      margin-left: .5rem
+      text-decoration: underline
+  a.active
+    color: #ff7eb3
+
+@include media-breakpoint-down(md)
+  .hidden
+    display: none
+  .status
+    z-index: 300
+    background-color: rgba($white, .9)
+    position: fixed
+    bottom: .5rem
+    left: auto
+    right: .5rem
+    padding: .5rem .75rem
+    border-radius: 10px

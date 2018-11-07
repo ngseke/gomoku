@@ -7,6 +7,8 @@
       .row
         - for (let col = 0; col < size; col++)
           .block(id=`b${row}${col}` ref=`block${row}${col}` @click=`clickBlock(${row}, ${col})`  :class=`getBlockClass(${row}, ${col})`)
+            //- - if (row===5&&col===1)
+              .line.topRight
             .line(:class=`getLineClass(${row}, ${col})`)
             .mini-dot
             .chess.preview(v-if=`isMyTurn && board[${row}][${col}] === 0`)

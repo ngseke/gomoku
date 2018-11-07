@@ -62,4 +62,7 @@ h2
   background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%)
   text-shadow: 0 0 5px rgba(black, .3)
 
+@include media-breakpoint-down(md)
+  h2
+    margin-bottom: 0
 </style>

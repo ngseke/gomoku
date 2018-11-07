@@ -20,12 +20,12 @@
   transition: transform .4s
 
 .chat-item-enter-active
-  transition: all .3s
-  transform-origin: left
+  transform-origin: left center
+  transition: transform .3s, opacity .3s
   opacity: 1
 
 .chat-item-enter, .chat-item-leave-to
-  transform-origin: left
+  transform-origin: left center
   transform: translateX(-1rem) scale(.5)
   opacity: 0
 

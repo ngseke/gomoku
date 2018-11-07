@@ -3,7 +3,11 @@ main
   Logo(:name='roomName' @clickRoomName='clickChangeRoomName()')
   .container(v-show='!isLoading')
     .row(v-show='page === `game`')
-      .col-12.col-md
+      #chat-toggle-btn.col-12.mb-3.d-flex.d-lg-none
+        a(href='#' @click='isChatShow = !isChatShow' :class='{ active: isChatShow }')
+          fa(icon='comment-alt')
+          span(v) Chat
+      .col-12.col-md(:class='{ hidden: isChatShow }')
         Board(ref='board' :game='game' :chess='myChess' :fingerprint='fingerprint' @clickBlock='clickBlock' @sendGame='sendGame')
         .result(v-if='$refs.board && $refs.board.isIWin !== null')
           transition-group(name='block-item')
@@ -19,11 +23,11 @@ main
             span(v-else-if='$refs.board.isFirstTime === true' key='status-2') 誰都可以先下
             span.my-turn(v-else-if='$refs.board.isMyTurn === true' key='status-3') #[fa(icon='arrow-circle-up')] 換你了
             span.waiting(v-else-if='$refs.board.isMyTurn === false' key='status-4') #[fa(icon='stopwatch')] 等對方下...
-      .col-12.col-md-5.col-lg-4
+      .col-12.col-md-12.col-lg-4
         #player-list
           transition-group(name='player-item' tag='ul')
             li(v-for='(p, i, index) in players' :title='`加入遊戲時間: ${convertDate(p.date)}`' :key='index' :class='getPlayerItemClass(p.chess)') #[fa(icon='user')]  {{ p.info.name }}
-        Chat(:roomId='roomId' :fingerprint='fingerprint' ref='chat')
+        Chat(:roomId='roomId' :fingerprint='fingerprint' ref='chat' :class='{ hidden: !isChatShow }')
     .row.justify-content-center.align-items-center.mt-3(v-if='page === `name`')
       .col-12.col-md-6.col-lg-5.col-xl-4(v-if='fingerprint')
         Nickname(v-model.trim='newRoomName' @confirm='confirmRoomName' @cancel='page = `game`' :isRoomName='true' )
@@ -60,6 +64,7 @@ export default {
       page: `game`,
       newRoomName: ``,
       isLoggedIn: false,
+      isChatShow: false,
     }
   },
   created () {
@@ -83,13 +88,14 @@ export default {
 
       // 監聽房間內 linstenList 列表中所有子節點
       this.linstenList.forEach(child => {
-        if (child === `game`) {
-          db.onRoom(this.roomId, child, (data) => {
+        if (child === `game`)
+          db.onRoom(this.roomId, child, data => {
             this[child] = data
+            window.navigator.vibrate(100)
           })
-        }
+
         else
-          db.onRoom(this.roomId, child, (data) => this[child] = data)
+          db.onRoom(this.roomId, child, data => this[child] = data)
       })
 
       // 當 `本機` 離線時呼叫 disconnect()
