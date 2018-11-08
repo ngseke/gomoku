@@ -3,11 +3,7 @@ main
   Logo(:name='roomName' @clickRoomName='clickChangeRoomName()')
   .container(v-show='!isLoading')
     .row(v-show='page === `game`')
-      #chat-toggle-btn.col-12.mb-3.d-flex.d-lg-none
-        a(href='#' @click='isChatShow = !isChatShow' :class='{ active: isChatShow }')
-          fa(icon='comment-alt')
-          span(v) Chat
-      .col-12.col-md(:class='{ hidden: isChatShow }')
+      .col-12.col-md.order-3.order-lg-2(:class='{ hidden: isChatShow }')
         Board(ref='board' :game='game' :chess='myChess' :fingerprint='fingerprint' @clickBlock='clickBlock' @sendGame='sendGame')
         .result(v-if='$refs.board && $refs.board.isIWin !== null')
           transition-group(name='block-item')
@@ -23,7 +19,11 @@ main
             span(v-else-if='$refs.board.isFirstTime === true' key='status-2') 誰都可以先下
             span.my-turn(v-else-if='$refs.board.isMyTurn === true' key='status-3') #[fa(icon='arrow-circle-up')] 換你了
             span.waiting(v-else-if='$refs.board.isMyTurn === false' key='status-4') #[fa(icon='stopwatch')] 等對方下...
-      .col-12.col-md-12.col-lg-4
+      .col-12.col-md-12.col-lg-4.order-1.order-lg-3
+        #chat-toggle-btn
+          a(href='#' @click='isChatShow = !isChatShow' :class='{ active: isChatShow }')
+            fa(icon='comment-alt')
+            span(v-if='!isChatShow') Chat
         #player-list
           transition-group(name='player-item' tag='ul')
             li(v-for='(p, i, index) in players' :title='`加入遊戲時間: ${convertDate(p.date)}`' :key='index' :class='getPlayerItemClass(p.chess)') #[fa(icon='user')]  {{ p.info.name }}

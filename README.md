@@ -1,19 +1,25 @@
-# xiaqi
+# GOMOKU / 五子棋
+以 Vue.js 與 Firebase 打造的 Serverless 連線五子棋遊戲
 
-## Project setup
+![](https://i.imgur.com/KlRYwP1.jpg)
+![](https://i.imgur.com/o8OjJlB.jpg)
+![](https://i.imgur.com/MH3lIFR.jpg)
+
+
+## Demo
+https://gomoku.ga/
+https://gomoku.x-q.me/
+
+## Installation
 ```
-npm install
+npm i
 ```
 
-### Compiles and hot-reloads for development
+Compiles and hot-reloads for development
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
 ```
 npm run build
 ```
-
-
-https://www.npmjs.com/package/randomstring

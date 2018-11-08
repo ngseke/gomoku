@@ -7,6 +7,9 @@ $lose-color: #ffa3b0
     $val: #{$val}, -#{$i * .5}px -#{$i * .5}px 0 $color
   @return $val
 
+main
+  padding-bottom: 3rem
+
 .row
   justify-content: center
 
@@ -87,8 +90,11 @@ $lose-color: #ffa3b0
         opacity: 1
 
 #chat-toggle-btn
+  display: none
+  margin-bottom: .75rem
   a
     color: $gray-500
+    font-weight: bold
     span
       margin-left: .5rem
       text-decoration: underline
@@ -96,11 +102,15 @@ $lose-color: #ffa3b0
     color: #ff7eb3
 
 @include media-breakpoint-down(md)
+  #chat-toggle-btn
+    display: flex
+  #player-list
+    margin-bottom: 2rem
   .hidden
     display: none
   .status
     z-index: 300
-    background-color: rgba($white, .9)
+    background-color: rgba($white, .8)
     position: fixed
     bottom: .5rem
     left: auto
