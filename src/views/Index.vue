@@ -114,8 +114,9 @@ export default {
     },
     getWinRate (win, lose, even = 0) {
       try {
-        if (isNaN(win + lose + even)) return null
-        return ((win / (win + lose + even)) * 100).toFixed(0)
+        const result = ((win / (win + lose + even)) * 100).toFixed(0)
+        if (isNaN(result)) return null
+        return result
       } catch (e) {
         return null
       }
