@@ -33,6 +33,7 @@ export default {
         this.profile = profile
         if (profile) this.goToIndex()
       })
+
   },
   methods: {
     confirm () {
@@ -40,7 +41,10 @@ export default {
         .then(() => this.goToIndex())
     },
     goToIndex () {
-      this.$router.push({ name: 'Index' })
+      if (this.$route.query.roomId)
+        this.$router.push({ name: 'Room', params: { id: this.$route.query.roomId } })
+      else
+        this.$router.push({ name: 'Index' })
     }
   },
   components: {

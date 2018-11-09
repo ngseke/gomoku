@@ -134,7 +134,7 @@ export default {
       this.status.push(`取得玩家資訊`)
       this.profile = await db.getPlayer(this.fingerprint)
       if (!this.profile) {
-        this.$router.push({ name: 'Register' })
+        this.$router.push({ name: 'Register', query: { roomId: this.roomId } })
         throw `The player hasn't registered.`
       }
     },

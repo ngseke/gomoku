@@ -37,11 +37,11 @@ main
   .loader(v-if='isLoading')
     span.icon: fa(icon='circle-notch' spin)
     span {{ status[(status.length - 1)] }}
-  //- footer
+  footer
     .container
       span= `build: ${+new Date()} `
       span(v-if='fingerprint')  / #[fa(icon='fingerprint')] {{ fingerprint }}
-      span(v-if='profile')  / #[fa(icon='window-maximize')] {{ profile.browser.name }}
+      //- span(v-if='profile')  / #[fa(icon='window-maximize')] {{ profile.browser.name }}
 </template>
 
 <script>
