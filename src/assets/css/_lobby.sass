@@ -35,19 +35,28 @@ nav
           display: inline-block
           color: white
     &.profile
+      text-align: center
       color: $black
       margin-bottom: 0
       h3
         font-style: normal
         font-size: 1rem
-      .fingerprint
+        margin-bottom: .5rem
+      h4.record
         font-size: .8rem
-        color: $gray-500
-        overflow: hidden
+        font-weight: normal
+        margin-bottom: 0
+        b
+          font-family: $font-family-monospace
+          color: $gray-800
+          // &.win
+          //   color: darken($win-color, 25%)
+          // &.lose
+          //   color: darken($lose-color, 40%)
+
     &:hover:not(.join)
         transform: scale(.98) skewX(-.5deg) skewY(-.5deg)
         opacity: .8
-
 
 @include media-breakpoint-down(sm)
   nav
@@ -57,4 +66,4 @@ nav
         .input-area
           +px(1rem)
       &.profile
-        min-height: 3rem
+        // min-height: 3rem

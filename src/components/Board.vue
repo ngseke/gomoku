@@ -7,8 +7,6 @@
       .row
         - for (let col = 0; col < size; col++)
           .block(id=`b${row}${col}` ref=`block${row}${col}` @click=`clickBlock(${row}, ${col})`  :class=`getBlockClass(${row}, ${col})`)
-            //- - if (row===5&&col===1)
-              .line.topRight
             .line(:class=`getLineClass(${row}, ${col})`)
             .mini-dot
             .chess.preview(v-if=`isMyTurn && board[${row}][${col}] === 0`)
@@ -21,6 +19,7 @@
 import moment from 'moment'
 import firebase from 'firebase/app'
 import chessBoard from '@/assets/js/chessBoard'
+import db from '@/assets/js/db'
 
 const interval = 20
 
@@ -65,13 +64,15 @@ export default {
       const checkWinner = chessBoard.checkFullBoard(this.board)
       if (checkWinner.chess !== 0) {
         nextGame.result = {
-          date: firebase.database.ServerValue.TIMESTAMP ,
+          date: firebase.database.ServerValue.TIMESTAMP,
           player: this.fingerprint,
           content: checkWinner,
           board: nextGame.board.slice()
         }
-        nextGame.board = chessBoard.getNewBoard(15)
+        nextGame.board = chessBoard.getNewBoard()
         nextGame.previous.position = null
+
+        this.$emit(`setRecord`)
       }
 
       this.$emit(`clickBlock`, nextGame)
@@ -173,5 +174,4 @@ export default {
 
 <style scoped lang="sass">
 @import "../assets/css/board"
-
 </style>

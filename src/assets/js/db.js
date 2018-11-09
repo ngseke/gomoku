@@ -36,10 +36,11 @@ const getPlayer = (id) => {
 
 // 新增或編輯玩家
 const setPlayer = (id, name, isNew = true) => {
-  const newPlayer = {
-    name,
+  const newPlayer = { name }
+  if (isNew) {
+    newPlayer.createDate = +new Date()
+    newPlayer.record = { win: 0, lose: 0, even: 0}
   }
-  if (isNew) newPlayer.createDate = +new Date()
 
   const { detect } = require('detect-browser')
   const browser = detect()
@@ -50,6 +51,22 @@ const setPlayer = (id, name, isNew = true) => {
       .then(result => resolve())
       .catch(e => reject(e))
   })
+}
+
+// 設定玩家戰績
+const setPlayerRecord = async (idA, idB, isEven = false) => {
+  if (!isEven) {
+    if (idA && await getPlayer(idA)) {
+      const playerAWin = (await playerRef.child(`${idA}/record/win`).once('value')).val()
+      await playerRef.child(`${idA}/record/win`).set(playerAWin + 1)
+    }
+    if (idB && await getPlayer(idB)) {
+      const playerBLose = (await playerRef.child(`${idB}/record/lose`).once('value')).val()
+      await playerRef.child(`${idB}/record/lose`).set(playerBLose + 1)
+    }
+  } else {
+
+  }
 }
 
 // 新增房間
@@ -177,9 +194,9 @@ const sendGame = async (id, game) => {
   await roomRef.child(`${id}/game`).set(game)
 }
 
-
 const sendChat = async (id, content, fingerprint = null) => {
   const player = (fingerprint) ? await getPlayer(fingerprint) : null
+  if (fingerprint) player.fingerprint = fingerprint
   const message = {
     date: firebase.database.ServerValue.TIMESTAMP,
     player,
@@ -197,6 +214,7 @@ export default {
   getPlayer,
   setPlayer,
   getIsLoggedIn,
+  setPlayerRecord,
   //
   createRoom,
   getIsRoomExist,

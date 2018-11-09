@@ -4,14 +4,12 @@ main
   .container(v-show='!isLoading')
     .row(v-show='page === `game`')
       .col-12.col-md.order-3.order-lg-2(:class='{ hidden: isChatShow }')
-        Board(ref='board' :game='game' :chess='myChess' :fingerprint='fingerprint' @clickBlock='clickBlock' @sendGame='sendGame')
+        Board(ref='board' :game='game' :chess='myChess' :fingerprint='fingerprint' @clickBlock='clickBlock' @sendGame='sendGame' @setRecord='setRecord')
         .result(v-if='$refs.board && $refs.board.isIWin !== null')
           transition-group(name='block-item')
             .win(v-if='$refs.board.isIWin === true' key='you-win-text') 你贏了
             .lose(v-if='$refs.board.isIWin === false' key='you-lost-text') 你輸了
-        //- .result
-          .win 你贏了
-          .lose 你輸了
+        //- .result #[.win 你贏了] #[.lose 你輸了]
         .status(v-if='$refs.board')
           transition(name='status-text' mode='out-in')
             span(v-if='$refs.board.timeToStart === null' key='status-0') ...
@@ -23,7 +21,7 @@ main
         #chat-toggle-btn
           a(href='#' @click='isChatShow = !isChatShow' :class='{ active: isChatShow }')
             fa(icon='comment-alt')
-            span(v-if='!isChatShow') Chat
+            span(v-if='!isChatShow || 1') Chat
         #player-list
           transition-group(name='player-item' tag='ul')
             li(v-for='(p, i, index) in players' :title='`加入遊戲時間: ${convertDate(p.date)}`' :key='index' :class='getPlayerItemClass(p.chess)') #[fa(icon='user')]  {{ p.info.name }}
@@ -122,8 +120,13 @@ export default {
       this.sendGame(nextGame)
     },
     async sendGame (game) {
-      console.log(`sendGame`)
       db.sendGame(this.roomId, game)
+    },
+    async setRecord () {
+      const winner = this.fingerprint
+      const loser = Object.keys(this.players).find((id) => id !== winner) || null
+      console.log(winner, loser)
+      db.setPlayerRecord(winner, loser)
     },
     async disconnect () {
       this.goToIndex()
@@ -198,8 +201,9 @@ export default {
       if (name.trim() === ``) throw `Empty room name!`
       const info = { name }
       await db.setRoomInfo(this.roomId, info)
-      await this.$refs.chat.sendChat(this.roomId, `Room Name has been changed to '${name}'`, null)
+      await this.$refs.chat.sendChat(this.roomId, `Room name has been changed to '${name}'`, null)
     },
+    // 取得玩家列表項目的 class
     getPlayerItemClass (chess) {
       return {
         black: chess === 1,
@@ -213,6 +217,7 @@ export default {
     roomName () {
       return (this.info) ? this.info.name : null
     },
+    // 取得我的棋子種類
     myChess () {
       try {
         return (this.players && this.fingerprint) ? this.players[this.fingerprint].chess : null

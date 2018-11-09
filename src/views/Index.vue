@@ -18,13 +18,16 @@ main
             router-link.block.profile(:to='{ name: `ModifyProfile` }')
               div(v-if='profile')
                 h3(:title='fingerprint') #[fa(icon='rocket')] {{ profile.name }}
-              div(v-else): fa(icon='ellipsis-h')
+                h4.record(v-if='profile.record')
+                  span 勝#[b.win {{ profile.record.win }}]  負#[b.lose {{ profile.record.lose }}]
+                  span(v-if='getWinRate(profile.record.win, profile.record.lose, profile.record.even)')  勝率#[b {{ getWinRate(profile.record.win, profile.record.lose, profile.record.even) }}%]
+              div(v-else): fa(icon='circle-notch' spin)
       .col.mt-5.mt-md-0
         h2 Rooms
         #room-list
-          .loader(v-if='!rooms')
+          .no-room(v-if='isRoomLoaded && !rooms' key='empty-label') No room
+          .loader(v-else-if='!rooms')
             span.icon: fa(icon='circle-notch' spin)
-          .no-room(v-else-if='roomList.length === 0' key='empty') No rooms
           transition-group.row.no-gutters(name='room-item')
             .col-12.col-lg-6(v-for='i in roomList' :key='i.key' @click='enterRoom(i.key)' )
               .item(:class='getRoomItemClass(getPlayersCount(i.players))')
@@ -40,8 +43,7 @@ main
   footer
     .container
       span= `build: ${+new Date()} `
-      span(v-if='fingerprint')  / #[fa(icon='fingerprint')] {{ fingerprint }}
-      //- span(v-if='profile')  / #[fa(icon='window-maximize')] {{ profile.browser.name }}
+      span(v-if='fingerprint')  / #[fa(icon='fingerprint')] {{ fingerprint.substring(0, 4)  }}
 </template>
 
 <script>
@@ -61,6 +63,7 @@ export default {
     return {
       roomIdText: ``,
       rooms: null,
+      isRoomLoaded: false
     }
   },
   mounted () {
@@ -75,6 +78,7 @@ export default {
 
       db.roomRef.orderByChild('date').limitToLast(100).on(`value`, snap => {
         this.rooms = snap.val()
+        this.isRoomLoaded = true
       })
     },
     async createRoom () {
@@ -107,6 +111,14 @@ export default {
         2: `full`,
       }
       return classMap[n] || `full`
+    },
+    getWinRate (win, lose, even = 0) {
+      try {
+        if (isNaN(win + lose + even)) return null
+        return ((win / (win + lose + even)) * 100).toFixed(0)
+      } catch (e) {
+        return null
+      }
     }
   },
   computed: {

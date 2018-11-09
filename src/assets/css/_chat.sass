@@ -13,8 +13,9 @@
   ul
     display: flex
     flex-direction: row
+    flex-wrap: wrap
     height: 15rem
-    width: auto
+    width: 100%
     overflow-y: scroll
     overflow-x: visible
     &::-webkit-scrollbar
@@ -22,9 +23,9 @@
     li
       display: flex
       margin-bottom: .4rem
-      width: 100%
       color: $black
       word-break: break-all
+      flex: 0 0 100%
       b
         margin-right: .5rem
       .time
@@ -35,6 +36,8 @@
       &:hover
         .time
           display: inline-block
+      &.right
+        justify-content: flex-end
     .info
       font-style: italic
       font-weight: bold
