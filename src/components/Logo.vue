@@ -1,7 +1,8 @@
 <template lang="pug">
 #logo
-  h1(@click='back()')
-    .back-btn(v-if='name'): a(href='#' @click='back()' v-if='name'): fa(icon='angle-left')
+  h1
+    .back-btn(v-if='name')
+      a(href='#' @click='back()' v-if='name'): fa(icon='angle-left')
     img(src='/icon.png')
     span() Gomoku
   h2(v-if='name' @click='clickRoomName()') {{ name }}

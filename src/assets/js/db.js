@@ -137,16 +137,16 @@ const getIsLoggedIn = (id, fingerprint) => {
 }
 
 const onRoom = (id, child, cb) => {
-  if (child === `chat`)
-    roomRef.child(`${id}/${child}`).orderByChild('date').limitToLast(100).on('value', (snap) => {
+  if (child === `chat`) {
+    roomRef.child(`${id}/${child}`).orderByChild('date').limitToLast(20).on('value', (snap) => {
       cb(snap.val())
-      // console.log(`[event]${id}/${child}`)
     })
-  else
+  }
+  else {
     roomRef.child(`${id}/${child}`).on('value', (snap) => {
       cb(snap.val())
-      // console.log(`[event]${id}/${child}`)
     })
+  }
 }
 
 const setRoomInfo = async (id, info = {}) => {

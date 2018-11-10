@@ -8,12 +8,11 @@
   margin: 1rem 0
   width: 100%
   border: 1px solid rgba(#fad0c4, .8)
+
   &:hover
     border: 1px solid rgba(#fad0c4, .8)
   ul
-    display: flex
-    flex-direction: row
-    flex-wrap: wrap
+    display: block
     height: 15rem
     width: 100%
     overflow-y: scroll
@@ -25,7 +24,6 @@
       margin-bottom: .4rem
       color: $black
       word-break: break-all
-      flex: 0 0 100%
       b
         margin-right: .5rem
       .time
@@ -38,6 +36,8 @@
           display: inline-block
       &.right
         justify-content: flex-end
+    .message, .info
+      @extend .chat-item-in
     .info
       font-style: italic
       font-weight: bold
@@ -77,5 +77,3 @@
       transition: background-color .2s
       &:hover
         background-color: $gray-200
-
-@include media-breakpoint-down(md)

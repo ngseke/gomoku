@@ -3,7 +3,7 @@ main
   Logo(:name='roomName' @clickRoomName='clickChangeRoomName()')
   .container(v-show='!isLoading')
     .row(v-show='page === `game`')
-      .col-12.col-md.order-3.order-lg-2(:class='{ hidden: isChatShow }')
+      #game-area.col-12.col-md.order-3.order-lg-2(:class='{ hidden: isChatShow }')
         Board(ref='board' :game='game' :chess='myChess' :fingerprint='fingerprint' @clickBlock='clickBlock' @sendGame='sendGame' @setRecord='setRecord')
         .result(v-if='$refs.board && $refs.board.isIWin !== null')
           transition-group(name='block-item')
@@ -18,14 +18,14 @@ main
             span.my-turn(v-else-if='$refs.board.isMyTurn === true' key='status-3') #[fa(icon='arrow-circle-up')] 換你了
             span.waiting(v-else-if='$refs.board.isMyTurn === false' key='status-4') #[fa(icon='stopwatch')] 等對方下...
       .col-12.col-md-12.col-lg-4.order-1.order-lg-3
-        #chat-toggle-btn
-          a(href='#' @click='isChatShow = !isChatShow' :class='{ active: isChatShow }')
-            fa(icon='comment-alt')
+        #chat-toggle-btn(:class='{ new: $refs.chat.notificationCount > 0 }' v-if='$refs.chat')
+          a(href='#' @click='toggleChatShow()' :class='{ active: isChatShow }')
+            fa.icon(icon='comment-alt')
             span(v-if='!isChatShow || 1') Chat
         #player-list
           transition-group(name='player-item' tag='ul')
             li(v-for='(p, i, index) in players' :title='`加入遊戲時間: ${convertDate(p.date)}`' :key='index' :class='getPlayerItemClass(p.chess)') #[fa(icon='user')]  {{ p.info.name }}
-        Chat(:roomId='roomId' :fingerprint='fingerprint' ref='chat' :class='{ hidden: !isChatShow }')
+        Chat(:roomId='roomId' :fingerprint='fingerprint' ref='chat' :class='{ hidden: !isChatShow }' :isShow='isChatShow')
     .row.justify-content-center.align-items-center.mt-3(v-if='page === `name`')
       .col-12.col-md-6.col-lg-5.col-xl-4(v-if='fingerprint')
         Nickname(v-model.trim='newRoomName' @confirm='confirmRoomName' @cancel='page = `game`' :isRoomName='true' )
@@ -211,6 +211,10 @@ export default {
         me: chess === this.myChess,
         turn: this.boardRef ? (this.boardRef.whosTurn === chess) : false,
       }
+    },
+    toggleChatShow () {
+      this.isChatShow = !this.isChatShow
+      if (this.isChatShow) this.$nextTick(() => this.$refs.chat.focus())
     }
   },
   computed: {

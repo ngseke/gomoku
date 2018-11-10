@@ -40,7 +40,7 @@ main
   footer
     .container
       span= `build: ${+new Date()} `
-      span(v-if='fingerprint')  / #[fa(icon='fingerprint')] {{ fingerprint.substring(0, 4) }}
+      span(v-if='fingerprint' :title='`fingerprint: ${fingerprint}`') / #[fa(icon='fingerprint')] {{ fingerprint.substring(0, 4) }}
 </template>
 
 <script>
@@ -154,6 +154,8 @@ h2
 
 footer
   margin-top: 2rem
+  margin-bottom: 1rem
   color: $gray-500
   font-size: .8rem
+  font-family: $font-family-monospace
 </style>

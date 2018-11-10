@@ -10,13 +10,14 @@ main
 .row
   justify-content: center
 
-.col-md
+#game-area
+  position: relative
   overflow: hidden
   margin-bottom: 1rem
-  position: relative
+
 
 @include media-breakpoint-down(md)
-  .col-md
+  #game-area
     overflow: scroll
 
 .result
@@ -29,9 +30,6 @@ main
   height: 100%
   font-size: 3.5rem
   font-weight: 900
-  // .win, .lose
-    &:hover
-      opacity: .5
   .win
     text-shadow: long-shadow(darken($win-color, 15%), 15)
     color: $win-color
@@ -41,7 +39,6 @@ main
 
 .status
   text-align: center
-
   span
     display: inline-block
   .my-turn
@@ -90,19 +87,28 @@ main
   display: none
   margin-bottom: .75rem
   a
+    position: relative
     color: $gray-500
     font-weight: bold
+    transition: all .2s
+    padding: .2rem .5rem
+    border-radius: 10px
     span
       margin-left: .5rem
-      text-decoration: underline
+  &.new
+    .icon
+      @extend .chat-toggle-btn-blink
   a.active
-    color: #ff7eb3
+    color: $chat-toggle-btn-color
+    background-color: rgba($gray-200, .8)
+    span
+      +gradient-text(linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%))
 
 @include media-breakpoint-down(md)
   #chat-toggle-btn
     display: flex
   #player-list
-    margin-bottom: 2rem
+    margin-bottom: 1rem
   .hidden
     display: none
   .status
@@ -110,7 +116,11 @@ main
     background-color: rgba($white, .8)
     position: fixed
     bottom: .5rem
-    left: auto
+    left: .5rem
     right: .5rem
     padding: .5rem .75rem
     border-radius: 10px
+  .result
+    position: fixed
+    height: auto
+    top: 50%
