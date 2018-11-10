@@ -1,12 +1,13 @@
 <template lang="pug">
 #chat
   ul(ref='chatList')
-    li(v-for='i in chatList' :key='i.key' :title='convertDate(i.date)')
-      .message(v-if='i.player')
-        b [{{ i.player.name }}]
-        span.content  {{ i.content }}
-        span.time {{ convertDate(i.date, true) }}
-      .info(v-else) {{ i.content }}
+    transition-group
+      li(v-for='i in chatList' :key='i.key' :title='convertDate(i.date)')
+        .message(v-if='i.player')
+          b [{{ i.player.name }}]
+          span.content  {{ i.content }}
+          span.time {{ convertDate(i.date, true) }}
+        .info(v-else) {{ i.content }}
   .input-area
     span.icon #[i.fas.fa-comment-alt]
     input(type='text' v-model.trim='chatInputText' @keyup.enter='enter(roomId, chatInputText, fingerprint)' placeholder='' maxlength='100' @focus='clearNotificationCount()' autofocus)
