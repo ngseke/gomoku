@@ -1,8 +1,9 @@
 <template lang="pug">
 #logo
-  h1
-    a(href='#' @click='back()' v-if='name'): fa(icon='angle-left')
-    span Gomoku
+  h1(@click='back()')
+    .back-btn(v-if='name'): a(href='#' @click='back()' v-if='name'): fa(icon='angle-left')
+    img(src='/icon.png')
+    span() Gomoku
   h2(v-if='name' @click='clickRoomName()') {{ name }}
 </template>
 
@@ -17,7 +18,8 @@ export default {
   },
   methods: {
     back () {
-      this.$router.push({ name: `Index` })
+      if (this.name)
+        this.$router.push({ name: `Index` })
     },
     clickRoomName () {
       this.$emit('clickRoomName')
@@ -35,34 +37,44 @@ export default {
 h1
   +flex-center
   flex-direction: row
+  position: relative
   font-weight: 900
-  text-transform: uppercase
-  font-size: 2.5rem
+  font-size: 2rem
+  letter-spacing: -.1rem
   span
     +gradient-text(linear-gradient(25deg, black 0%, rgba(#434343, .7) 100%))
-  a
-    font-size: 2rem
-    opacity: .5
-    margin-right: 1rem
-    color: $gray-400
-    &:hover
-      color: $gray-500
+    margin-left: .3rem
   img
     width: auto
-    height: 1.2rem
+    height: 2.5rem
     vertical-align: baseline
+
 h2
-  padding: .2rem .5rem
-  font-weight: 500
+  padding: .2rem .7rem
+  font-weight: bold
   font-size: 1.5rem
-  color: white
   cursor: pointer
+  color: white
+  box-shadow: 0 0 10px rgba(black, .2)
   transform: translateY(-.2rem) skewX(15deg)
   background-clip: border-box
-  background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%)
-  text-shadow: 0 0 5px rgba(black, .3)
+  background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%)
 
 @include media-breakpoint-down(md)
   h2
     margin-bottom: 0
+
+h1
+  & > .back-btn
+    border-radius: 10px
+    position: absolute
+    top: 0
+    left: -1.5rem
+    height: 100%
+    a
+      font-size: 2rem
+      color: $gray-400
+      transition: color .2s
+    &:hover a
+      color: $gray-500
 </style>

@@ -31,6 +31,7 @@ nav
           display: inline-block
           margin-right: .5rem
           font-size: 1rem
+          text-transform: uppercase
         a.submit
           display: inline-block
           color: white
@@ -38,6 +39,8 @@ nav
       text-align: center
       color: $black
       margin-bottom: 0
+      h3, h4
+        @extend .left-bounce-in
       h3
         font-style: normal
         font-size: 1rem
@@ -46,6 +49,7 @@ nav
         font-size: .8rem
         font-weight: normal
         margin-bottom: 0
+        animation-delay: .2s
         b
           font-family: $font-family-monospace
           color: $gray-800
@@ -57,6 +61,16 @@ nav
     &:hover:not(.join)
         transform: scale(.98) skewX(-.5deg) skewY(-.5deg)
         opacity: .8
+
+#room-list
+  height: 23rem
+  overflow-x: hidden
+  overflow-y: scroll
+  .no-room
+    height: 100%
+    font-style: italic
+    color: $gray-500
+    +flex-center
 
 @include media-breakpoint-down(sm)
   nav

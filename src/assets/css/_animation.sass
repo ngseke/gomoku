@@ -57,3 +57,28 @@
 .status-text-enter
   transform: translateY(1rem)
   opacity: 0
+
+
+@keyframes left-bounce-in
+  from
+    opacity: 0
+    transform-origin: left
+    transform: scale(.5)
+  to
+    transform-origin: left
+    transform: 0
+
+@keyframes bounce-in
+  from
+    opacity: 0
+    transform: scale(.5)
+  to
+    transform: 0
+
+.left-bounce-in
+  animation: left-bounce-in .4s ease
+  animation-fill-mode: backwards
+
+.bounce-in
+  animation: bounce-in .4s ease
+  animation-fill-mode: backwards

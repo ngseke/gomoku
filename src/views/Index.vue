@@ -19,8 +19,11 @@ main
               div(v-if='profile')
                 h3(:title='fingerprint') #[fa(icon='rocket')] {{ profile.name }}
                 h4.record(v-if='profile.record')
-                  span 勝#[b.win {{ profile.record.win }}]  負#[b.lose {{ profile.record.lose }}]
-                  span(v-if='getWinRate(profile.record.win, profile.record.lose, profile.record.even)')  勝率#[b {{ getWinRate(profile.record.win, profile.record.lose, profile.record.even) }}%]
+                  span 勝#[b.win: CountUp(:endVal='profile.record.win')]
+                  span  負#[b.lose: CountUp(:endVal='profile.record.lose') ]
+                  span(v-if='getWinRate(profile.record.win, profile.record.lose, profile.record.even)')
+                    |  勝率
+                    b {{ getWinRate(profile.record.win, profile.record.lose, profile.record.even) }}%
               div(v-else): fa(icon='circle-notch' spin)
       .col.mt-5.mt-md-0
         h2 Rooms
@@ -29,25 +32,20 @@ main
           .loader(v-else-if='!rooms')
             span.icon: fa(icon='circle-notch' spin)
           transition-group.row.no-gutters(name='room-item')
-            .col-12.col-lg-6(v-for='i in roomList' :key='i.key' @click='enterRoom(i.key)' )
-              .item(:class='getRoomItemClass(getPlayersCount(i.players))')
-                h4(v-if='i.info') {{ i.info.name }} #[small {{ i.key }}]
-                .description
-                  span.date(v-if='i.info') {{ convertDate(i.info.createDate, true) }}
-                  span.player-count
-                    span.icon #[fa(icon='user')]
-                    | #[b {{ getPlayersCount(i.players) }}]/2
+            .col-12.col-lg-6(v-for='room in roomList' :key='room.key' @click='enterRoom(room.key)' )
+              RoomListItem(:room='room')
   .loader(v-if='isLoading')
     span.icon: fa(icon='circle-notch' spin)
     span {{ status[(status.length - 1)] }}
   footer
     .container
       span= `build: ${+new Date()} `
-      span(v-if='fingerprint')  / #[fa(icon='fingerprint')] {{ fingerprint.substring(0, 4)  }}
+      span(v-if='fingerprint')  / #[fa(icon='fingerprint')] {{ fingerprint.substring(0, 4) }}
 </template>
 
 <script>
 import Logo from '@/components/Logo.vue'
+import RoomListItem from '@/components/RoomListItem.vue'
 import { common } from '@/mixins/common'
 
 import fingerprint from '@/assets/js/fingerprint'
@@ -56,6 +54,7 @@ import db from '@/assets/js/db'
 
 import moment from 'moment'
 import _ from 'lodash'
+import CountUp from 'vue-countup-v2'
 
 export default {
   name: 'Index',
@@ -134,10 +133,11 @@ export default {
     }
   },
   beforeDestroy () {
-    console.log(`beforeDestroy Index`)
   },
   components: {
-    Logo
+    Logo,
+    CountUp,
+    RoomListItem,
   },
   mixins: [common]
 }
@@ -145,7 +145,6 @@ export default {
 
 <style scoped lang="sass">
 @import "../assets/css/lobby"
-@import "../assets/css/roomList"
 
 h2
   display: block
