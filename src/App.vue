@@ -4,9 +4,6 @@
 </template>
 
 <script>
-import db from '@/assets/js/db'
-import fingerprint from '@/assets/js/fingerprint'
-
 export default {
   data () {
     return {

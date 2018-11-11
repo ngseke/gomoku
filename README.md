@@ -8,6 +8,7 @@
 
 ## Demo
 https://gomoku.ga/
+
 https://gomoku.x-q.me/
 
 ## Installation

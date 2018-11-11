@@ -12,8 +12,6 @@ library.add(fas)
 library.add(fab)
 Vue.component('fa', FontAwesomeIcon)
 
-// import 'bootstrap'
-
 new Vue({
   router,
   render: h => h(App)

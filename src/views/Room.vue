@@ -15,7 +15,7 @@ main
             span(v-if='$refs.board.timeToStart === null' key='status-0') ...
             span.waiting(v-else-if='$refs.board.timeToStart >= 0' key='status-1') #[fa(icon='stopwatch')] 下一局即將開始... ({{ $refs.board.timeToStart }})
             span(v-else-if='$refs.board.isFirstTime === true' key='status-2') 誰都可以先下
-            span.my-turn(v-else-if='$refs.board.isMyTurn === true' key='status-3') #[fa(icon='arrow-circle-up')] 換你了
+            span.my-turn(v-else-if='$refs.board.isMyTurn === true' key='status-3') #[fa(icon='hand-point-up')] 換你了
             span.waiting(v-else-if='$refs.board.isMyTurn === false' key='status-4') #[fa(icon='stopwatch')] 等對方下...
       .col-12.col-md-12.col-lg-4.order-1.order-lg-3
         #chat-toggle-btn(:class='{ new: $refs.chat.notificationCount > 0 }' v-if='$refs.chat')
@@ -78,8 +78,8 @@ export default {
       this.isLoading = true   // 設定正在載入中
 
       await this.setProfile()       // 取得玩家本人資料
+      await this.checkRoom()        // 檢查房間是否存
       await this.checkRepeatLogin() // 檢查是否重複登入
-      await this.checkRoom()        // 檢查房間是否存在
       await this.checkPlayerCount()
       const chess = await this.chooseChess()
       await this.joinRoom(chess)         // 加入房間
@@ -91,7 +91,6 @@ export default {
             this[child] = data
             window.navigator.vibrate(100)
           })
-
         else
           db.onRoom(this.roomId, child, data => this[child] = data)
       })
@@ -177,7 +176,7 @@ export default {
       }
     },
     async leaveRoom () {
-      this.sendSystemInfo(`${this.profile.name} has left.`)
+      if(this.isLoggedIn) this.sendSystemInfo(`${this.profile.name} has left.`)
       this.linstenList.forEach(child => db.offRoom(this.roomId, child))
       if(this.isLoggedIn) await db.leaveRoom(this.roomId, this.fingerprint)
       db.roomRef.child(`${this.roomId}/players/${this.fingerprint}`).onDisconnect().cancel()  // 解除綁定

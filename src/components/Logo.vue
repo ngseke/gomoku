@@ -5,7 +5,7 @@
       a(href='#' @click='back()' v-if='name'): fa(icon='angle-left')
     img(src='/icon.png')
     span() Gomoku
-  h2(v-if='name' @click='clickRoomName()') {{ name }}
+  h2(v-if='name' @click='clickRoomName()' title='點擊修改房名') {{ name }}
 </template>
 
 <script>
@@ -60,6 +60,10 @@ h2
   transform: translateY(-.2rem) skewX(15deg)
   background-clip: border-box
   background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%)
+  transition: all .3s
+  &:hover
+    transform: translateY(-.2rem) skewX(15deg) scale(1.05)
+    opacity: .9
 
 @include media-breakpoint-down(md)
   h2
