@@ -31,7 +31,6 @@ export default {
       }
       return classMap[n] || `full`
     },
-
   },
   mixins: [common]
 }

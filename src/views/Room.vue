@@ -9,7 +9,6 @@ main
           transition-group(name='block-item')
             .win(v-if='$refs.board.isIWin === true' key='you-win-text') 你贏了
             .lose(v-if='$refs.board.isIWin === false' key='you-lost-text') 你輸了
-        //- .result #[.win 你贏了] #[.lose 你輸了]
         .status(v-if='$refs.board')
           transition(name='status-text' mode='out-in')
             span(v-if='$refs.board.timeToStart === null' key='status-0') ...
@@ -26,9 +25,10 @@ main
           transition-group(name='player-item' tag='ul')
             li(v-for='(p, i, index) in players' :title='`加入遊戲時間: ${convertDate(p.date)}`' :key='index' :class='getPlayerItemClass(p.chess)') #[fa(icon='user')]  {{ p.info.name }}
         Chat(:roomId='roomId' :fingerprint='fingerprint' ref='chat' :class='{ hidden: !isChatShow }' :isShow='isChatShow')
+        ShareLink(:class='{ hidden: !isChatShow }')
     .row.justify-content-center.align-items-center.mt-3(v-if='page === `name`')
       .col-12.col-md-6.col-lg-5.col-xl-4(v-if='fingerprint')
-        Nickname(v-model.trim='newRoomName' @confirm='confirmRoomName' @cancel='page = `game`' :isRoomName='true' )
+        Nickname(v-model.trim='newRoomName' @confirm='confirmRoomName' @cancel='page = `game`' :isRoomName='true')
   .loader(v-if='isLoading')
     span {{ status[(status.length - 1)] }}
     .progress: .bar(:style='{ width: `${100 * (status.length / 8)}%` }')
@@ -39,6 +39,7 @@ import Logo from '@/components/Logo.vue'
 import Chat from '@/components/Chat.vue'
 import Nickname from '@/components/Nickname.vue'
 import Board from '@/components/Board.vue'
+import ShareLink from '@/components/ShareLink.vue'
 
 import { common } from '@/mixins/common'
 import fingerprint from '@/assets/js/fingerprint'
@@ -246,6 +247,7 @@ export default {
     Chat,
     Nickname,
     Board,
+    ShareLink,
   },
   mixins: [common]
 }
