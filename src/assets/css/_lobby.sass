@@ -10,6 +10,7 @@ nav
     min-height: 8rem
     color: white
     transition: all .3s
+    cursor: pointer
     h3
       font-size: 1.5rem
       font-weight: 700
@@ -25,16 +26,43 @@ nav
         margin-top: .5rem
         +flex-center
         flex-direction: row
+        flex-wrap: wrap
         +px(2rem)
         transition: all .3s
         input
           display: inline-block
-          margin-right: .5rem
-          font-size: 1rem
           text-transform: uppercase
+          background: transparent
+          font-family: $font-family-monospace
+          color: white
+          text-align: center
+          font-size: 1.5rem
+          font-weight: 700
+          letter-spacing: .1rem
+          border-bottom: solid rgba(white, .8) 3px
+          width: 7rem
+          transition: border .2s
+          &:focus
+            border-bottom-color: white
+            box-shadow: 0 0 0
+
         a.submit
+          margin-left: .5rem
           display: inline-block
           color: white
+          transition: all .5s
+          max-width: 3rem
+          overflow: hidden
+          &.hide
+            max-width: 0rem
+            opacity: 0
+        small
+          margin-top: .5rem
+          text-align: center
+          flex: 0 0 100%
+          font-weight: bold
+          color: rgba(white, .8)
+
     &.profile
       text-align: center
       color: $black
@@ -58,14 +86,17 @@ nav
           // &.lose
           //   color: darken($lose-color, 40%)
 
-    &:hover:not(.join)
-        transform: scale(.98) skewX(-.5deg) skewY(-.5deg)
-        opacity: .8
+    &:hover
+      transform: scale(.98) skewX(-.5deg) skewY(-.5deg)
+      opacity: .8
+    &.clear-hover:hover
+      transform: none
+      opacity: 1
+      cursor: default
 
 #room-list
-  height: 23rem
   overflow-x: hidden
-  overflow-y: scroll
+  overflow-y: visible
   .no-room
     height: 100%
     font-style: italic

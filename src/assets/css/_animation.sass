@@ -8,6 +8,12 @@
   transform: scale(.5)
   opacity: 0
 
+.join-btn-enter-active, .join-btn-leave-active
+  transition: all .2s
+
+.join-btn-enter, .join-btn-leave-to
+  opacity: 0
+
 .room-item-enter-active, .room-item-leave-active
   transition: all .4s
   opacity: 1
@@ -25,6 +31,12 @@
 
 .player-item-enter, .player-item-leave-to
   transform: translateY(0rem) scale(.5)
+  opacity: 0
+  
+.full-loader-leave-active
+  transition: all .7s ease
+
+.full-loader-leave-to
   opacity: 0
 
 @keyframes down-to-up
@@ -84,19 +96,23 @@
     transform: scale(3)
     opacity: 0
 
+@keyframes flash
+  from
+    opacity: .3
+  to
+    opacity: 1
+
 .left-bounce-in
-  animation: left-bounce-in .4s ease
-  animation-fill-mode: backwards
+  animation: left-bounce-in .4s ease backwards
 
 .bounce-in
-  animation: bounce-in .4s ease
-  animation-fill-mode: backwards
+  animation: bounce-in .4s ease backwards
 
 .chat-item-in
-  animation: chat-item-in .3s ease
-  animation-fill-mode: backwards
+  animation: chat-item-in .3s ease backwards
 
 .chat-toggle-btn-blink
-  animation: chat-toggle-btn-blink .7s ease-in
-  animation-direction: alternate-reverse
-  animation-iteration-count: infinite
+  animation: chat-toggle-btn-blink .7s ease-in infinite alternate-reverse
+
+.flash
+  animation: flash .8s infinite alternate-reverse

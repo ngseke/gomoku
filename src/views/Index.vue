@@ -9,11 +9,13 @@ main
             a.block.new(href='#' @click='createRoom()')
               h3 New
           .col.col-md-12
-            .block.join
-              h3 Join
-              .input-area
-                input(type='text' v-model='roomIdText' @keyup.enter='enterRoom(roomIdText)' maxlength='4')
-                a.submit(href='#' @click='enterRoom(roomIdText)') #[fa(icon='check')]
+            .block.join(@click='onFocusJoinBtn()' :class=`{ 'clear-hover': isJoinInputShow }`)
+              transition(name='join-btn' mode='out-in' @after-enter='onFocusJoinInput')
+                h3(v-if='!isJoinInputShow') Join
+                .input-area(v-else)
+                  input(type='text' ref='joinInput' v-model='roomIdText' @keyup.enter='enterRoom(roomIdText)' maxlength='4')
+                  a.submit(href='#' @click='enterRoom(roomIdText)' :class='{ hide: roomIdText === ``}') #[fa(icon='chevron-right')]
+                  small 輸入房間 ID 以加入
           .col-12
             router-link.block.profile(:to='{ name: `ModifyProfile` }')
               div(v-if='profile')
@@ -25,8 +27,7 @@ main
                     |  勝率
                     b {{ getWinRate(profile.record.win, profile.record.lose, profile.record.even) }}%
               div(v-else): fa(icon='circle-notch' spin)
-      .col.mt-5.mt-md-0
-        h2 Rooms
+      .col.mt-3.mt-md-0
         #room-list
           .no-room(v-if='isRoomLoaded && !rooms' key='empty-label') No room
           .loader(v-else-if='!rooms')
@@ -37,10 +38,14 @@ main
   .loader(v-if='isLoading')
     span.icon: fa(icon='circle-notch' spin)
     span {{ status[(status.length - 1)] }}
+
+  transition(name='full-loader')
+    #full-loader(v-if='isFullLoaderShow')
+      Logo(:isForFullLoader='true').my-0
+
   footer
     .container
-      span= `build: ${+new Date()} `
-      span(v-if='fingerprint' :title='`fingerprint: ${fingerprint}`') / #[fa(icon='fingerprint')] {{ fingerprint.substring(0, 4) }}
+      span(v-if='fingerprint' :title='`fingerprint: ${fingerprint}`') #[fa(icon='fingerprint')] {{ fingerprint.substring(0, 4) }}
 </template>
 
 <script>
@@ -62,7 +67,8 @@ export default {
     return {
       roomIdText: ``,
       rooms: null,
-      isRoomLoaded: false
+      isRoomLoaded: false,
+      isJoinInputShow: false,
     }
   },
   mounted () {
@@ -75,7 +81,7 @@ export default {
       if (!profile) this.$router.push({ name: 'Register' })
       else this.profile = profile
 
-      db.roomRef.orderByChild('date').limitToLast(100).on(`value`, snap => {
+      db.roomRef.orderByChild('date').limitToLast(10).on(`value`, snap => {
         this.rooms = snap.val()
         this.isRoomLoaded = true
       })
@@ -119,6 +125,13 @@ export default {
       } catch (e) {
         return null
       }
+    },
+    onFocusJoinBtn () {
+      this.isJoinInputShow = true
+    },
+    onFocusJoinInput () {
+      if (this.isJoinInputShow)
+        this.$nextTick(() => { this.$refs.joinInput.focus() })
     }
   },
   computed: {
@@ -130,6 +143,9 @@ export default {
         .value()
       if (!this.rooms) return null
       return _.orderBy(result, `info.createDate`).reverse()
+    },
+    isFullLoaderShow () {
+      return !this.isRoomLoaded || !this.profile
     }
   },
   beforeDestroy () {

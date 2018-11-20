@@ -14,8 +14,8 @@ main
             span(v-if='$refs.board.timeToStart === null' key='status-0') ...
             span.waiting(v-else-if='$refs.board.timeToStart >= 0' key='status-1') #[fa(icon='stopwatch')] 下一局即將開始... ({{ $refs.board.timeToStart }})
             span(v-else-if='$refs.board.isFirstTime === true' key='status-2') 誰都可以先下
-            span.my-turn(v-else-if='$refs.board.isMyTurn === true' key='status-3') #[fa(icon='hand-point-up')] 換你了
-            span.waiting(v-else-if='$refs.board.isMyTurn === false' key='status-4') #[fa(icon='stopwatch')] 等對方下...
+            span.my-turn(v-else-if='$refs.board.isMyTurn === true' key='status-3') #[fa.flash(icon='hand-point-up')] 換你了
+            span.waiting(v-else-if='$refs.board.isMyTurn === false' key='status-4') #[fa(icon='hourglass-start')] 等對方下...
       .col-12.col-md-12.col-lg-4.order-1.order-lg-3
         #chat-toggle-btn(:class='{ new: $refs.chat.notificationCount > 0 }' v-if='$refs.chat')
           a(href='#' @click='toggleChatShow()' :class='{ active: isChatShow }')
@@ -29,6 +29,7 @@ main
     .row.justify-content-center.align-items-center.mt-3(v-if='page === `name`')
       .col-12.col-md-6.col-lg-5.col-xl-4(v-if='fingerprint')
         Nickname(v-model.trim='newRoomName' @confirm='confirmRoomName' @cancel='page = `game`' :isRoomName='true')
+
   .loader(v-if='isLoading')
     span {{ status[(status.length - 1)] }}
     .progress: .bar(:style='{ width: `${100 * (status.length / 8)}%` }')

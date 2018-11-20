@@ -28,7 +28,7 @@ export default {
       chat: null,
       notificationCount: 0,
       chatInputText: ``,
-      words: [`你好`, `GG`, `謝謝`, `掰哺`, `快一點`, `手滑了`, `幹🖕`, `女束攵`]
+      words: [`GG`, `謝謝`, `快一點`, `手滑了`, `嫩`, `幹🖕`, ]
     }
   },
   props: {

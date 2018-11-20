@@ -1,20 +1,29 @@
 <template lang="pug">
 #logo
-  h1
+  h1(:class='{ column: isForFullLoader }')
     .back-btn(v-if='name')
       a(href='#' @click='back()' v-if='name'): fa(icon='angle-left')
-    img(src='/icon.png')
-    span() Gomoku
-  h2(v-if='name' @click='clickRoomName()' title='點擊修改房名') {{ name }}
+    img(:src='logoImg')
+    span Gomoku
+  h2(v-if='name' @click='clickRoomName()' title='修改房名') {{ name }}
 </template>
 
 <script>
 export default {
   name: 'Logo',
+  data () {
+    return {
+      logoImg: require('@/assets/icon.png')
+    }
+  },
   props: {
     name: {
       type: String,
       default: null
+    },
+    isForFullLoader: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -49,6 +58,10 @@ h1
     width: auto
     height: 2.5rem
     vertical-align: baseline
+  &.column
+    flex-direction: column
+    span
+      margin: 0
 
 h2
   padding: .2rem .7rem
