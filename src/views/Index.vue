@@ -35,13 +35,13 @@ main
           transition-group.row.no-gutters(name='room-item')
             .col-12.col-lg-6(v-for='room in roomList' :key='room.key' @click='enterRoom(room.key)' )
               RoomListItem(:room='room')
-  .loader(v-if='isLoading')
-    span.icon: fa(icon='circle-notch' spin)
-    span {{ status[(status.length - 1)] }}
 
   transition(name='full-loader')
     #full-loader(v-if='isFullLoaderShow')
       Logo(:isForFullLoader='true').my-0
+      .loader(v-if='isLoading')
+        span.icon: fa(icon='circle-notch' spin)
+        span {{ status[(status.length - 1)] }}
 
   footer
     .container
@@ -145,7 +145,7 @@ export default {
       return _.orderBy(result, `info.createDate`).reverse()
     },
     isFullLoaderShow () {
-      return !this.isRoomLoaded || !this.profile
+      return !this.isRoomLoaded || !this.profile || this.isLoading
     }
   },
   beforeDestroy () {

@@ -32,9 +32,9 @@
 .player-item-enter, .player-item-leave-to
   transform: translateY(0rem) scale(.5)
   opacity: 0
-  
+
 .full-loader-leave-active
-  transition: all .7s ease
+  transition: all .6s ease
 
 .full-loader-leave-to
   opacity: 0
@@ -42,12 +42,12 @@
 @keyframes down-to-up
   from
     opacity: 0
-    transform: translateY(5rem)
+    transform: translateY(4rem)
   to
     transform: 0
 
 .show-up
-  animation: down-to-up .4s ease
+  animation: down-to-up .4s cubic-bezier(0.4, 0.0, 0.2, 1)
   animation-fill-mode: backwards
 
 .status-text-enter-active

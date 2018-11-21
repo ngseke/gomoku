@@ -4,7 +4,7 @@
     .back-btn(v-if='name')
       a(href='#' @click='back()' v-if='name'): fa(icon='angle-left')
     img(:src='logoImg')
-    span Gomoku
+    span(v-if='!isForFullLoader') Gomoku
   h2(v-if='name' @click='clickRoomName()' title='修改房名') {{ name }}
 </template>
 

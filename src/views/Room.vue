@@ -30,9 +30,12 @@ main
       .col-12.col-md-6.col-lg-5.col-xl-4(v-if='fingerprint')
         Nickname(v-model.trim='newRoomName' @confirm='confirmRoomName' @cancel='page = `game`' :isRoomName='true')
 
-  .loader(v-if='isLoading')
-    span {{ status[(status.length - 1)] }}
-    .progress: .bar(:style='{ width: `${100 * (status.length / 8)}%` }')
+  transition(name='full-loader')
+    #full-loader(v-if='isLoading')
+      Logo(:isForFullLoader='true').my-0
+      .loader
+        //- span {{ status[(status.length - 1)] }}
+        .progress: .bar(:style='{ width: `${100 * (status.length / 8)}%` }')
 </template>
 
 <script>

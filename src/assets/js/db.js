@@ -94,7 +94,7 @@ const createRoom = (creatorId = null) => {
     },
   }
 
-  const idLength = [3, 4].sort((a, b) => Math.random() > 0.5 ? -1 : 1)[0] // id 長度隨機為 3 或 4
+  const idLength = [3].sort((a, b) => Math.random() > 0.5 ? -1 : 1)[0] // id 長度隨機為 3 或 4
   let id = null
   let createAttemptCounter = 50   // 檢查 room id 嘗試次數
 
