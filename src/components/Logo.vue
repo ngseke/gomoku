@@ -1,10 +1,12 @@
 <template lang="pug">
 #logo
   h1(:class='{ column: isForFullLoader }')
-    .back-btn(v-if='name')
-      a(href='#' @click='back()' v-if='name'): fa(icon='angle-left')
+    .back-btn(v-if='name || $route.name === `About`')
+      a(href='#' @click='back()'): fa(icon='angle-left')
     img(:src='logoImg')
     span(v-if='!isForFullLoader') Gomoku
+    router-link.about-btn(to='/about' v-if='!isForFullLoader && !name && $route.name === `Index`')
+      fa.icon(icon='question')
   h2(v-if='name' @click='clickRoomName()' title='修改房名') {{ name }}
 </template>
 
@@ -28,8 +30,10 @@ export default {
   },
   methods: {
     back () {
-      if (this.name)
-        this.$router.push({ name: `Index` })
+      this.$router.push({ name: `Index` })
+    },
+    about () {
+      this.$router.push({ name: `About` })
     },
     clickRoomName () {
       this.$emit('clickRoomName')
@@ -50,9 +54,9 @@ h1
   position: relative
   font-weight: 900
   font-size: 2rem
-  letter-spacing: -.1rem
   span
     +gradient-text(linear-gradient(25deg, black 0%, rgba(#434343, .7) 100%))
+    letter-spacing: -.1rem
     margin-left: .3rem
   img
     width: auto
@@ -95,4 +99,10 @@ h1
       transition: color .2s
     &:hover a
       color: $gray-500
+
+.about-btn
+  font-size: 1rem
+  +mx(.5rem)
+  .icon
+    color: $gray-500
 </style>

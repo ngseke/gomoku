@@ -13,7 +13,7 @@ main
               transition(name='join-btn' mode='out-in' @after-enter='onFocusJoinInput')
                 h3(v-if='!isJoinInputShow') Join
                 .input-area(v-else)
-                  input(type='text' ref='joinInput' v-model='roomIdText' @keyup.enter='enterRoom(roomIdText)' maxlength='4')
+                  input(type='text' ref='joinInput' v-model='roomIdText' @keyup.enter='enterRoom(roomIdText)' maxlength='3')
                   a.submit(href='#' @click='enterRoom(roomIdText)' :class='{ hide: roomIdText === ``}') #[fa(icon='chevron-right')]
                   small 輸入房間 ID 以加入
           .col-12
@@ -39,7 +39,7 @@ main
   transition(name='full-loader')
     #full-loader(v-if='isFullLoaderShow')
       Logo(:isForFullLoader='true').my-0
-      .loader(v-if='isLoading')
+      .loader(v-if='isLoading + 1')
         span.icon: fa(icon='circle-notch' spin)
         span {{ status[(status.length - 1)] }}
 
