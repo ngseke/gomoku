@@ -9,8 +9,8 @@
     input(type='text' :value='value' @input=`$emit('input', $event.target.value)` @focus='inputOnFocus()' @keyup.stop.prevent.enter='confirm()' maxlength='30')
     a.btn-dice(href='#' @click.prevent='setRandomName()' title='特約命理師幫你起名' v-if='!isRoomName') #[fa(icon='dice')]
   div.show-up(:style='{ animationDelay: `.3s` }')
-    a.text-success.btn-confirm(href='#' @click.prevent='confirm()') V
-    a.text-danger.btn-cancel(href='#' @click.prevent='$emit(`cancel`)' v-if='!isFirst || isRoomName') X
+    a.text-success.btn-confirm(href='#' @click.prevent='confirm()') ✓
+    a.text-danger.btn-cancel(href='#' @click.prevent='$emit(`cancel`)' v-if='!isFirst || isRoomName') ✗
 </template>
 
 <script>

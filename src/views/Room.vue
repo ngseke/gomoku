@@ -3,19 +3,14 @@ main
   Logo(:name='roomName' @clickRoomName='clickChangeRoomName()')
   .container(v-show='!isLoading')
     .row(v-show='page === `game`')
-      #game-area.col-12.col-md.order-3.order-lg-2(:class='{ hidden: isChatShow }')
-        Board(ref='board' :game='game' :chess='myChess' :fingerprint='fingerprint' @clickBlock='clickBlock' @sendGame='sendGame' @setRecord='setRecord')
-        .result(v-if='$refs.board && $refs.board.isIWin !== null')
-          transition-group(name='block-item')
-            .win(v-if='$refs.board.isIWin === true' key='you-win-text') 你贏了
-            .lose(v-if='$refs.board.isIWin === false' key='you-lost-text') 你輸了
-        .status(v-if='$refs.board')
-          transition(name='status-text' mode='out-in')
-            span(v-if='$refs.board.timeToStart === null' key='status-0') ...
-            span.waiting(v-else-if='$refs.board.timeToStart >= 0' key='status-1') #[fa(icon='stopwatch')] 下一局即將開始... ({{ $refs.board.timeToStart }})
-            span(v-else-if='$refs.board.isFirstTime === true' key='status-2') 誰都可以先下
-            span.my-turn(v-else-if='$refs.board.isMyTurn === true' key='status-3') #[fa.flash(icon='hand-point-up')] 換你了
-            span.waiting(v-else-if='$refs.board.isMyTurn === false' key='status-4') #[fa(icon='hourglass-start')] 等對方下...
+      #game-area.col-12.col-md.order-3.order-lg-2
+        div(:class='{ hidden: isChatShow }')
+          Board(ref='board' :game='game' :chess='myChess' :fingerprint='fingerprint' @clickBlock='clickBlock' @sendGame='sendGame' @setRecord='setRecord')
+          .result(v-if='$refs.board && $refs.board.isIWin !== null')
+            transition-group(name='block-item')
+              .win(v-if='$refs.board.isIWin === true' key='you-win-text') 你贏了
+              .lose(v-if='$refs.board.isIWin === false' key='you-lost-text') 你輸了
+        Status(v-if='$refs.board' :board='$refs.board')
       .col-12.col-md-12.col-lg-4.order-1.order-lg-3
         #chat-toggle-btn(:class='{ new: $refs.chat.notificationCount > 0 }' v-if='$refs.chat')
           a(href='#' @click='toggleChatShow()' :class='{ active: isChatShow }')
@@ -44,6 +39,7 @@ import Chat from '@/components/Chat.vue'
 import Nickname from '@/components/Nickname.vue'
 import Board from '@/components/Board.vue'
 import ShareLink from '@/components/ShareLink.vue'
+import Status from '@/components/Status.vue'
 
 import { common } from '@/mixins/common'
 import fingerprint from '@/assets/js/fingerprint'
@@ -252,6 +248,7 @@ export default {
     Nickname,
     Board,
     ShareLink,
+    Status,
   },
   mixins: [common]
 }

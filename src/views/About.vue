@@ -1,15 +1,16 @@
 <template lang="pug">
 main
+
   .container
-    .row.align-items-center.justify-content-center
+    .row.justify-content-center
       .logo.col-12.col-md-3.mb-3.mb-md-0
         h1
           .back-btn
             a(href='#' @click='back()'): fa(icon='angle-left')
           img(:src='logoImg')
           span Gomoku
-      .info.col-12.col-md-7
-        p #[b Gomoku] 是無禁手的五子棋遊戲，分享房間連結即可和好友線上對弈。
+      .info.col-12.col-md-7.col-lg-6
+        p #[b Gomoku] 是#[u 無禁手]的五子棋遊戲，分享房間連結即可和好友線上對弈。
         p 雙方分別使用黑白兩色的棋子，輪流下在棋盤直線與橫線的交叉點上，先在橫線、直線或斜對角線上形成 5 子連線者獲勝。
         //- .flow
           .step 新增房間或輸入 ID 加入現有房間
@@ -17,7 +18,7 @@ main
           .step 結束
         p
           span By Huang Xingqiao
-          a(href='https://github.com/a92304a92304/tic-tac-toe' target='_blank'): fa(:icon='[`fab`, `github-alt`]')
+          a(href='https://github.com/seanyellow/gomoku' target='_blank'): fa(:icon='[`fab`, `github-alt`]')
           a(href='mailto:a92304a92304@gmail.com' target='_blank'): fa(icon='envelope')
           a(href='https://x-q.me' target='_blank'): fa(icon='home')
 </template>
@@ -56,20 +57,30 @@ export default {
 @keyframes down-in
   from
     opacity: 0
-    transform: translateY(-.5rem)
+    transform: translateY(-.7rem)
   to
 
 .logo
   h1
     animation: bounce-in .4s ease .4s backwards
+
 .info
+  position: relative
   p
+    line-height: 2rem
+    a, span
+      color: $gray-500
+      margin-right: .25rem
+      font-size: .8rem
+    span
+      margin-right: .4rem
+
     &:nth-child(1)
-      animation: down-in .4s ease .6s backwards
+      animation: down-in .5s ease .6s backwards
     &:nth-child(2)
-      animation: down-in .4s ease .8s backwards
+      animation: down-in .5s ease .8s backwards
     &:nth-child(3)
-      animation: down-in .4s ease 1s backwards
+      animation: down-in .5s ease 1s backwards
 
 main
   +flex-center
@@ -107,14 +118,6 @@ h1
   &:hover a
     color: $gray-600
 
-p
-  line-height: 2rem
-  a, span
-    color: $gray-500
-    margin-right: .25rem
-    font-size: .8rem
-  span
-    margin-right: .4rem
 
 .flow
   display: flex

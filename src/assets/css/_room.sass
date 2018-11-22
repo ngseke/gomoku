@@ -5,7 +5,7 @@
   @return $val
 
 main
-  padding-bottom: 3rem
+  padding-bottom: 5rem
 
 .row
   justify-content: center
@@ -14,7 +14,6 @@ main
   position: relative
   overflow: hidden
   margin-bottom: 1rem
-
 
 @include media-breakpoint-down(md)
   #game-area
@@ -36,18 +35,6 @@ main
   .lose
     text-shadow: long-shadow(darken($lose-color, 15%), 15)
     color: $lose-color
-
-.status
-  margin-top: .5rem
-  text-align: center
-  span
-    display: inline-block
-  .my-turn
-    font-weight: bold
-    color: #097298
-  .waiting
-    color: $gray-700
-    font-style: italic
 
 #player-list
   ul
@@ -87,41 +74,37 @@ main
 
 #chat-toggle-btn
   display: none
-  margin-bottom: .75rem
+  z-index: 999
   a
+    +block-border
     position: relative
     color: $gray-500
     font-weight: bold
     transition: all .2s
     padding: .2rem .5rem
-    border-radius: 10px
+
     span
       margin-left: .5rem
+    background-color: rgba($gray-200, .8)
   &.new
     .icon
       @extend .chat-toggle-btn-blink
   a.active
     color: $chat-toggle-btn-color
-    background-color: rgba($gray-200, .8)
+    background-color: rgba($gray-300, .8)
     span
       +gradient-text(linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%))
 
 @include media-breakpoint-down(md)
   #chat-toggle-btn
+    position: fixed
+    bottom: .5rem
+    right: .5rem
     display: flex
   #player-list
     margin-bottom: 1rem
   .hidden
     display: none
-  .status
-    z-index: 300
-    background-color: rgba($white, .8)
-    position: fixed
-    bottom: .5rem
-    left: .5rem
-    right: .5rem
-    padding: .5rem .75rem
-    border-radius: 10px
   .result
     position: fixed
     height: auto

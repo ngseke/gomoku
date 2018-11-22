@@ -6,7 +6,7 @@
     img(:src='logoImg')
     span(v-if='!isForFullLoader') Gomoku
     router-link.about-btn(to='/about' v-if='!isForFullLoader && !name && $route.name === `Index`')
-      fa.icon(icon='question')
+      fa.icon(icon='star')
   h2(v-if='name' @click='clickRoomName()' title='修改房名') {{ name }}
 </template>
 
@@ -102,6 +102,9 @@ h1
 
 .about-btn
   font-size: 1rem
+  // position: fixed
+  // bottom: 1rem
+  // right: 1rem
   +mx(.5rem)
   .icon
     color: $gray-500

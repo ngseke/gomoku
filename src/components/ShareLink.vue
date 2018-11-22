@@ -2,7 +2,7 @@
 .block(title='分享網址邀請朋友加入房間同樂 (如果你有的話)')
   h6
     fa.icon(icon='sign-in-alt')
-    span Invite your friend to this room
+    span Invite your friend
   .input-box
     input(type='text' v-model='link' @focus='copy()' ref='inputBox')
     transition(name='fade-in')

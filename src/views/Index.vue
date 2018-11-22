@@ -127,6 +127,7 @@ export default {
       }
     },
     onFocusJoinBtn () {
+      this.onFocusJoinInput()
       this.isJoinInputShow = true
     },
     onFocusJoinInput () {
@@ -161,12 +162,6 @@ export default {
 
 <style scoped lang="sass">
 @import "../assets/css/lobby"
-
-h2
-  display: block
-  text-transform: uppercase
-  margin-bottom: .5rem
-  text-align: center
 
 footer
   margin-top: 2rem
