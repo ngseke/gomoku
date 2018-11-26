@@ -145,6 +145,9 @@ export default {
     isFirstTime () {
       return this.game ? (this.game.previous.chess === 0) : null
     },
+    isEven () {
+      return this.isWaiting ? (this.game.result.content.chess === 3) : null
+    },
     isIWin () {
       return this.isWaiting ? (this.game.result.content.chess === this.chess) : null
     },

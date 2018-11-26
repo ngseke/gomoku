@@ -1,11 +1,5 @@
-@function long-shadow($color, $number)
-  $val: 0px 0px $color
-  @for $i from 1 through $number
-    $val: #{$val}, -#{$i * .5}px -#{$i * .5}px 0 $color
-  @return $val
-
 main
-  padding-bottom: 5rem
+  padding-bottom: 0
 
 .row
   justify-content: center
@@ -15,26 +9,14 @@ main
   overflow: hidden
   margin-bottom: 1rem
 
+#board-area
+  position: relative
+
 @include media-breakpoint-down(md)
+  main
+    margin-bottom: 3rem
   #game-area
     overflow: scroll
-
-.result
-  +flex-center
-  z-index: 150
-  position: absolute
-  top: 0
-  left: 0
-  width: 100%
-  height: 100%
-  font-size: 3.5rem
-  font-weight: 900
-  .win
-    text-shadow: long-shadow(darken($win-color, 15%), 15)
-    color: $win-color
-  .lose
-    text-shadow: long-shadow(darken($lose-color, 15%), 15)
-    color: $lose-color
 
 #player-list
   ul
@@ -77,15 +59,16 @@ main
   z-index: 999
   a
     +block-border
+    // border-radius: 100rem
     position: relative
     color: $gray-500
     font-weight: bold
     transition: all .2s
     padding: .2rem .5rem
-
-    span
-      margin-left: .5rem
+    padding: .5rem .75rem
     background-color: rgba($gray-200, .8)
+    span
+      // margin-left: .5rem
   &.new
     .icon
       @extend .chat-toggle-btn-blink
@@ -105,7 +88,3 @@ main
     margin-bottom: 1rem
   .hidden
     display: none
-  .result
-    position: fixed
-    height: auto
-    top: 50%

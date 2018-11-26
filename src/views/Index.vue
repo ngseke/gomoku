@@ -5,10 +5,12 @@ main
     .row
       .col-12.col-md-5.col-lg-4
         nav.row.no-gutters
+          transition(name='join-btn')
+            .filter(v-if='isJoinInputShow' @click='isJoinInputShow = false')
           .col-12.col-md-12
             a.block.new(href='#' @click='createRoom()')
               h3 New
-          .col.col-md-12
+          .col.col-md-12(style='z-index: 500')
             .block.join(@click='onFocusJoinBtn()' :class=`{ 'clear-hover': isJoinInputShow }`)
               transition(name='join-btn' mode='out-in' @after-enter='onFocusJoinInput')
                 h3(v-if='!isJoinInputShow') Join
@@ -89,8 +91,13 @@ export default {
     async createRoom () {
       this.isLoading = true
       this.status.push(`創建中`)
-      const id = await db.createRoom(this.fingerprint)
-      this.$router.push({ name: `Room`, params: { id } })
+      try {
+        const id = await db.createRoom(this.fingerprint)
+        this.$router.push({ name: `Room`, params: { id } })
+      } catch (e) {
+        this.isLoading = false
+        this.status.length = 0
+      }
     },
     async enterRoom (id) {
       this.isLoading = true

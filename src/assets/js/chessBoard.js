@@ -11,11 +11,9 @@ const getNewBoard = (n = 15) => {
   return board
 }
 
-
 const checkFullBoard = (board) => {
   if (!board) return null
-  // const directions = [`left`, `right`, `top`, `bottom`, `topLeft`, `topRight`, `bottomLeft`, `bottomRight`]
-  const directions = [`right`, `bottom`, `topRight`, `bottomRight`]
+  const directions = [`right`, `bottom`, `topRight`, `bottomRight`] // 檢查右、下、右上、右下方向
 
   const rowSize = board.length
   const colSize = board[0].length
@@ -32,14 +30,9 @@ const checkFullBoard = (board) => {
       directions.forEach(direction => temp[direction] = [])
 
       for (let n = 0; n < 5; n++) {
-        // temp.left.push((j - n >= 0) ? board[i][j - n] : null)
         temp.right.push((j + n < colSize) ? board[i][j + n] : null)
-        // temp.top.push((i - n >= 0) ? board[i - n][j] : null)
         temp.bottom.push((i + n < rowSize) ? board[i + n][j] : null)
-
-        // temp.topLeft.push((i - n >= 0 && j - n >= 0) ? board[i - n][j - n] : null)
         temp.topRight.push((i - n >= 0 && j + n < colSize) ? board[i - n][j + n] : null)
-        // temp.bottomLeft.push((i + n  < rowSize && j - n >= 0) ? board[i + n][j - n] : null)
         temp.bottomRight.push((i + n  < rowSize && j + n < colSize) ? board[i + n][j + n] : null)
       }
       directions.forEach(direction => {
@@ -52,6 +45,11 @@ const checkFullBoard = (board) => {
         }
       })
     }
+  }
+
+  // 若平局
+  if (result.chess === 0 && (board.every(row => row.every(block => block !== 0)))) {
+    result.chess = 3
   }
 
   return result

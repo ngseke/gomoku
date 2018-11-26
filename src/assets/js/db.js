@@ -102,7 +102,6 @@ const createRoom = (creatorId = null) => {
     (async () => {
       while (createAttemptCounter-- >= 0) {
         id = randomstring.generate({ length: idLength, charset: `alphanumeric`, capitalization: `uppercase` })
-        console.log(`Room created. id: ${id}`)
         if (!(await getIsRoomExist(id))) break
       }
       if(createAttemptCounter >= 0) {

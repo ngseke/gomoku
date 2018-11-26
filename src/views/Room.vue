@@ -4,18 +4,15 @@ main
   .container(v-show='!isLoading')
     .row(v-show='page === `game`')
       #game-area.col-12.col-md.order-3.order-lg-2
-        div(:class='{ hidden: isChatShow }')
+        #board-area(:class='{ hidden: isChatShow }')
           Board(ref='board' :game='game' :chess='myChess' :fingerprint='fingerprint' @clickBlock='clickBlock' @sendGame='sendGame' @setRecord='setRecord')
-          .result(v-if='$refs.board && $refs.board.isIWin !== null')
-            transition-group(name='block-item')
-              .win(v-if='$refs.board.isIWin === true' key='you-win-text') 你贏了
-              .lose(v-if='$refs.board.isIWin === false' key='you-lost-text') 你輸了
+          Result(v-if='$refs.board' :board='$refs.board')
         Status(v-if='$refs.board' :board='$refs.board')
       .col-12.col-md-12.col-lg-4.order-1.order-lg-3
         #chat-toggle-btn(:class='{ new: $refs.chat.notificationCount > 0 }' v-if='$refs.chat')
           a(href='#' @click='toggleChatShow()' :class='{ active: isChatShow }')
             fa.icon(icon='comment-alt')
-            span(v-if='!isChatShow || 1') Chat
+            span(v-if='!isChatShow || 1')
         #player-list
           transition-group(name='player-item' tag='ul')
             li(v-for='(p, i, index) in players' :title='`加入遊戲時間: ${convertDate(p.date)}`' :key='index' :class='getPlayerItemClass(p.chess)') #[fa(icon='user')]  {{ p.info.name }}
@@ -40,6 +37,7 @@ import Nickname from '@/components/Nickname.vue'
 import Board from '@/components/Board.vue'
 import ShareLink from '@/components/ShareLink.vue'
 import Status from '@/components/Status.vue'
+import Result from '@/components/Result.vue'
 
 import { common } from '@/mixins/common'
 import fingerprint from '@/assets/js/fingerprint'
@@ -249,6 +247,7 @@ export default {
     Board,
     ShareLink,
     Status,
+    Result,
   },
   mixins: [common]
 }
