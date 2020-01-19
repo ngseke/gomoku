@@ -1,14 +1,7 @@
 const getNewBoard = (n = 15) => {
-  const board = []
-  for (let i = 0; i < n; i++) {
-    const row = []
-    for (let j = 0; j < n; j++) {
-      row.push(0)
-    }
-    board.push(row)
-  }
-
-  return board
+  return (new Array(n)).fill().map(() => {
+    return (new Array(n)).fill(0)
+  })
 }
 
 const checkFullBoard = (board) => {
