@@ -1,28 +1,15 @@
-const fingerprintjs2 = require('fingerprintjs2')
+import cookies from 'js-cookie'
+const randomstring = require('randomstring')
 
-const calcFingerprint = () => {
-  return new Promise((resolve, reject) => {
-    fingerprintjs2.getV18({ fonts: { extendedJsFonts: true } }, (result) => {
-      resolve(result)
-    })
-  })
-}
 
-// 取得瀏覽器指紋(hash)
-const get = () => {
-  return new Promise((resolve, reject) => {
-    if (window.requestIdleCallback) {
-      requestIdleCallback(() => {
-        calcFingerprint().then(result => resolve(result))
-      })
-    } else {
-      setTimeout(() => {
-        calcFingerprint().then(result => resolve(result))
-      }, 500)
-    }
-  })
+// 取得玩家 id，若不存在則創建一個
+const get = async () => {
+  const id = cookies.get('userId') || randomstring.generate(16)
+  cookies.set('userId', id, { expires: 365 })
+
+  return id
 }
 
 export default {
-  get
+  get,
 }

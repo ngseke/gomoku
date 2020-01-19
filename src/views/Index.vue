@@ -7,7 +7,7 @@ main
         nav.row.no-gutters
           transition(name='join-btn')
             .filter(v-if='isJoinInputShow' @click='isJoinInputShow = false')
-          .col-12.col-md-12
+          .col.col-md-12
             a.block.new(href='#' @click='createRoom()')
               h3 New
           .col.col-md-12(style='z-index: 500')
@@ -18,7 +18,7 @@ main
                   input(type='text' ref='joinInput' v-model='roomIdText' @keyup.enter='enterRoom(roomIdText)' maxlength='3')
                   a.submit(href='#' @click='enterRoom(roomIdText)' :class='{ hide: roomIdText === ``}') #[fa(icon='chevron-right')]
                   small 輸入房間 ID 以加入
-          .col-12
+          .col-12.col-md-12
             router-link.block.profile(:to='{ name: `ModifyProfile` }')
               div(v-if='profile')
                 h3(:title='fingerprint') #[fa(icon='rocket')] {{ profile.name }}
