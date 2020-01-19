@@ -7,8 +7,6 @@ main
         Nickname(v-model.trim='name' @confirm='confirm' @cancel='goToIndex()' :isFirst='false')
       .col-12.loader(v-else)
         fa(icon='circle-notch' spin)
-      //- .col-12
-        .fingerprint {{ fingerprint }}
 </template>
 
 <script>
@@ -21,26 +19,19 @@ import db from '@/assets/js/db'
 
 export default {
   name: 'ModifyProfile',
-  data () {
-    return {
+  async mounted () {
+    this.fingerprint = await fingerprint.get()
+    this.profile = await db.getPlayer(this.fingerprint)
+    
+    if (!this.profile) {
+      return this.goToIndex()
     }
-  },
-  mounted() {
-    fingerprint.get()
-      .then(fingerprint => {
-        this.fingerprint = fingerprint
-        return db.getPlayer(fingerprint)
-      })
-      .then(profile => {
-        if (!profile) this.goToIndex()
-        this.profile = profile
-        this.name = profile.name
-      })
+    this.name = this.profile.name
   },
   methods: {
-    confirm () {
-      db.setPlayer(this.fingerprint, this.name, false)
-        .then(() => this.goToIndex())
+    async confirm () {
+      await db.setPlayer(this.fingerprint, this.name, false)
+      this.goToIndex()
     },
     goToIndex () {
       this.$router.push({ name: 'Index' })
@@ -55,11 +46,6 @@ export default {
 </script>
 
 <style scoped lang="sass">
-.fingerprint
-  color: $gray-500
-  font-size: .8rem
-  text-align: center
-
 .loader
   text-align: center
 </style>

@@ -19,26 +19,16 @@ import db from '@/assets/js/db'
 
 export default {
   name: 'Register',
-  data () {
-    return {
-    }
-  },
-  mounted() {
-    fingerprint.get()
-      .then(fingerprint => {
-        this.fingerprint = fingerprint
-        return db.getPlayer(fingerprint)
-      })
-      .then(profile => {
-        this.profile = profile
-        if (profile) this.goToIndex()
-      })
+  async mounted () {
+    this.fingerprint = await fingerprint.get()
+    this.profile = await db.getPlayer(this.fingerprint)
 
+    if (this.profile) this.goToIndex()
   },
   methods: {
-    confirm () {
-      db.setPlayer(this.fingerprint, this.name)
-        .then(() => this.goToIndex())
+    async confirm () {
+      await db.setPlayer(this.fingerprint, this.name)
+      this.goToIndex()
     },
     goToIndex () {
       if (this.$route.query.roomId)
@@ -56,8 +46,4 @@ export default {
 </script>
 
 <style scoped lang="sass">
-.fingerprint
-  color: $gray-500
-  font-size: .8rem
-  text-align: center
 </style>
