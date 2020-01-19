@@ -9,7 +9,7 @@
 ## Demo
 https://gomoku.ga/
 
-https://gomoku.x-q.me/
+https://gomoku.seanyellow.ga/
 
 ## Installation
 ```
