@@ -1,43 +1,41 @@
-.block-item-enter-active
-  transition: all .3s ease
+.block-item
+  &-enter-active
+    transition: all .3s ease
+  &-leave-active
+    transition: all .3s cubic-bezier(1, 0.5, 0.8, 1)
+  &-enter, &-leave-to
+    transform: scale(.5)
+    opacity: 0
+ 
+.join-btn
+  &-enter-active, &-leave-active
+    transition: all .2s
+  &-enter, &-leave-to
+    opacity: 0
+    
+.room-item
+  &-enter-active, &-leave-active
+    transition: all .4s
+    opacity: 1
+  &-enter, &-leave-to
+    transform: scale(.9)
+    opacity: 0
+  &-move
+    transition: transform .4s
 
-.block-item-leave-active
-  transition: all .3s cubic-bezier(1, 0.5, 0.8, 1)
+.player-item
+  &-enter-active, &-leave-active
+    transition: all .2s
+    opacity: 1
+  &-enter, &-leave-to
+    transform: translateY(0rem) scale(.5)
+    opacity: 0
 
-.block-item-enter, .block-item-leave-to
-  transform: scale(.5)
-  opacity: 0
-
-.join-btn-enter-active, .join-btn-leave-active
-  transition: all .2s
-
-.join-btn-enter, .join-btn-leave-to
-  opacity: 0
-
-.room-item-enter-active, .room-item-leave-active
-  transition: all .4s
-  opacity: 1
-
-.room-item-enter, .room-item-leave-to
-  transform: scale(.9)
-  opacity: 0
-
-.room-item-move
-  transition: transform .4s
-
-.player-item-enter-active, .player-item-leave-active
-  transition: all .2s
-  opacity: 1
-
-.player-item-enter, .player-item-leave-to
-  transform: translateY(0rem) scale(.5)
-  opacity: 0
-
-.full-loader-leave-active
-  transition: all .6s ease
-
-.full-loader-leave-to
-  opacity: 0
+.full-loader
+  &-leave-active
+    transition: all .6s ease
+  &-leave-to
+    opacity: 0
 
 @keyframes down-to-up
   from
@@ -50,12 +48,12 @@
   animation: down-to-up .4s cubic-bezier(0.4, 0.0, 0.2, 1)
   animation-fill-mode: backwards
 
-.status-text-enter-active
-  transition: transform .3s, opacity .3s
-
-.status-text-enter
-  transform: translateY(1rem)
-  opacity: 0
+.status-text
+  &-enter-active
+    transition: transform .3s, opacity .3s
+  &-enter
+    transform: translateY(1rem)
+    opacity: 0
 
 @keyframes left-bounce-in
   from
