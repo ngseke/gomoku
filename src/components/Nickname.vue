@@ -7,13 +7,17 @@
     |  Nickname
   div.input-area
     input(type='text' :value='value' @input=`$emit('input', $event.target.value)` @focus='inputOnFocus()' @keyup.stop.prevent.enter='confirm()' maxlength='30')
-    a.btn-dice(href='#' @click.prevent='setRandomName()' title='特約命理師幫你起名' v-if='!isRoomName') #[fa(icon='dice')]
+    a.btn-dice(href='#' @click.prevent='setRandomName' title='特約命理師幫你起名' v-if='!isRoomName')
+      fa(icon='dice' v-if='!isFetching')
+      fa(icon='circle-notch' spin v-else)
   div
     a.text-success.btn-confirm(href='#' @click.prevent='confirm()') O
     a.text-danger.btn-cancel(href='#' @click.prevent='$emit(`cancel`)' v-if='!isFirst || isRoomName') X
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'Nickname',
   props: {
@@ -29,8 +33,8 @@ export default {
   },
   data () {
     return {
-      chineseCharacters: `宥翔語彤廷宇承恩品恩宸柏妍詠辰志豪沛恩綺妤芯語偉家冠`,
       inputOnFocusCounter: 0,
+      isFetching: false,
     }
   },
   mounted () {
@@ -43,13 +47,23 @@ export default {
         this.$emit('confirm')
       }
     },
-    setRandomName () {
-      const char = this.chineseCharacters.split(``).sort((a, b) => Math.random() > 0.5 ? -1 : 1)[0]
-      const prefixs = ['阿', '小', char]
-      const name = prefixs.sort((a, b) => Math.random() > 0.5 ? -1 : 1)[0] + char
+    async setRandomName () {
+      if (this.isFetching) return
+      const name = await this.getRandomName()
 
       this.inputOnFocusCounter = 0
       this.$emit('input', name)
+    },
+    async getRandomName () {
+      this.isFetching = true
+      try {
+        const { data } = await axios.get('https://randomuser.me/api/')
+        return data.results[0].name.first
+      } catch (e) {
+        throw 'Fail to get random name!'
+      } finally {
+        this.isFetching = false
+      }
     },
     inputOnFocus () {
       if (this.inputOnFocusCounter++ === 0 && this.isFirst)
