@@ -113,7 +113,12 @@ nav
     font-style: italic
     color: $gray-500
     +flex-center
-
+      
+@include media-breakpoint-down(lg)
+  nav
+    position: sticky
+    top: 1rem
+    
 @include media-breakpoint-down(sm)
   nav
     .block
@@ -123,4 +128,3 @@ nav
         .input-area
           +px(1rem)
       &.profile
-        // min-height: 3rem
