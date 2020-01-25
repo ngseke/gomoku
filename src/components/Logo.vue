@@ -52,6 +52,7 @@ h1
   +flex-center
   flex-direction: row
   position: relative
+  font-family: $font-family-sans-serif
   font-weight: 900
   font-size: 2rem
   span
