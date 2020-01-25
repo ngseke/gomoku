@@ -52,7 +52,6 @@ h1
   +flex-center
   flex-direction: row
   position: relative
-  font-family: $font-family-sans-serif
   font-weight: 900
   font-size: 2rem
   span
@@ -103,9 +102,6 @@ h1
 
 .about-btn
   font-size: 1rem
-  // position: fixed
-  // bottom: 1rem
-  // right: 1rem
   +mx(.5rem)
   .icon
     color: $gray-500

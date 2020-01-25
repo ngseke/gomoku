@@ -71,7 +71,6 @@ export default {
   height: 100%
   font-size: 4rem
   font-weight: 900
-  background: no-repeat bottom left
   background-size: 30%
   & > div
     animation: result-in .5s $time-function backwards
