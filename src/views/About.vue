@@ -20,7 +20,7 @@ main
           span By Huang Xingqiao
           a(href='https://github.com/seanyellow/gomoku' target='_blank'): fa(:icon='[`fab`, `github-alt`]')
           a(href='mailto:a92304a92304@gmail.com' target='_blank'): fa(icon='envelope')
-          a(href='https://x-q.me' target='_blank'): fa(icon='home')
+          a(href='https://seanyellow.ga' target='_blank'): fa(icon='home')
 </template>
 
 <script>
