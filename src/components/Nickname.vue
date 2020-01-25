@@ -1,8 +1,8 @@
 <template lang="pug">
 .dialog.show-up
-  h2(v-if='isRoomName') Room Name
-  h2(v-else)
-    |  Nickname
+  h2
+    span(v-if='isRoomName') Room Name
+    span(v-else) Nickname
   div.input-area
     input(type='text' :value='value' @input=`$emit('input', $event.target.value)` @focus='inputOnFocus()' @keyup.stop.prevent.enter='confirm()' maxlength='30')
     a.btn-dice(href='#' @click.prevent='setRandomName' title='特約命理師幫你起名' v-if='!isRoomName')

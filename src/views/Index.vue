@@ -137,9 +137,11 @@ export default {
       this.onFocusJoinInput()
       this.isJoinInputShow = true
     },
-    onFocusJoinInput () {
-      if (this.isJoinInputShow)
-        this.$nextTick(() => { this.$refs.joinInput.focus() })
+    async onFocusJoinInput () {
+      if (this.isJoinInputShow) {
+        await this.$nextTick()
+        this.$refs.joinInput.focus()
+      }
     }
   },
   computed: {
