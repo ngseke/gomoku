@@ -7,11 +7,12 @@
 
 
 ## Demo
-https://gomoku.ga/
-
-https://gomoku.seanyellow.ga/
+https://gomoku.ngseke.me/
 
 ## Installation
+
+> ⚠️ Only support Node 10
+
 ```
 npm i
 ```
